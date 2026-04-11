@@ -41,7 +41,28 @@ app.post('/producto', async (req, res) => {
   const ref = await db.collection('inventario').add(producto)
   res.json({ mensaje: 'Producto guardado en la nube', id: ref.id, producto })
 })
+// Reporte de compras
+app.get('/reporte', async (req, res) => {
+  const snapshot = await db.collection('inventario').get()
+  const urgentes = []
+  const normales = []
 
+  snapshot.forEach(doc => {
+    const p = { id: doc.id, ...doc.data() }
+    if (p.stock_actual <= p.stock_minimo) {
+      urgentes.push(p)
+    } else if (p.stock_actual <= p.stock_minimo * 2) {
+      normales.push(p)
+    }
+  })
+
+  res.json({
+    fecha: new Date(),
+    urgentes,
+    normales,
+    total_productos_revisar: urgentes.length + normales.length
+  })
+})
 app.listen(port, () => {
   console.log(`FarmaStock corriendo en http://localhost:${port}`)
   // Registrar una venta

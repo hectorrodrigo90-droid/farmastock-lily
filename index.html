@@ -51,8 +51,15 @@
     <button class="tab active" onclick="cambiarTab('inventario')">📦 Inventario</button>
     <button class="tab" onclick="cambiarTab('agregar')">➕ Agregar</button>
     <button class="tab" onclick="cambiarTab('ventas')">💰 Ventas</button>
+    <button class="tab" onclick="cambiarTab('reporte')">📋 Reporte</button>
   </div>
-
+<!-- REPORTE -->
+<div class="panel" id="panel-reporte">
+  <div class="card">
+    <h2>📋 Lista del lunes</h2>
+    <div id="lista-reporte">Cargando...</div>
+  </div>
+</div>
   <!-- INVENTARIO -->
   <div class="panel active" id="panel-inventario">
     <div class="alerta-banner" id="alerta-banner"></div>
@@ -109,6 +116,7 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
       document.getElementById('panel-' + tab).classList.add('active')
       if (tab === 'ventas') llenarSelectProductos()
+      if (tab === 'reporte') cargarReporte()
     }
 
     async function cargarInventario() {
@@ -179,6 +187,21 @@
       m.className = 'mensaje ' + tipo
       setTimeout(() => m.className = 'mensaje', 5000)
     }
+    async function cargarReporte() {
+  const res = await fetch('/reporte')
+  const data = await res.json()
+  let html = ''
+  if (data.urgentes.length > 0) {
+    html += '<p style="color:#991b1b;font-weight:700;margin-bottom:8px">🚨 Comprar HOY</p>'
+    html += data.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
+  }
+  if (data.normales.length > 0) {
+    html += '<p style="color:#854d0e;font-weight:700;margin:12px 0 8px">📦 Comprar el lunes</p>'
+    html += data.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
+  }
+  if (html === '') html = '<p style="color:#6b7280;text-align:center">✅ Todo el inventario está bien</p>'
+  document.getElementById('lista-reporte').innerHTML = html
+}
   </script>
 </body>
 </html>
