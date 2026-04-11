@@ -2,25 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FarmaStock Lily</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: sans-serif; background: #f0fdf4; padding: 20px; }
     header { background: #16a34a; color: white; padding: 20px; border-radius: 16px; margin-bottom: 24px; text-align: center; }
     header h1 { font-size: 24px; }
+    header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab { flex: 1; padding: 12px; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; background: white; color: #6b7280; transition: all .2s; }
+    .tab.active { background: #16a34a; color: white; }
+    .panel { display: none; }
+    .panel.active { display: block; }
     .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px #0001; }
     .card h2 { font-size: 16px; color: #166534; margin-bottom: 16px; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group.full { grid-column: span 2; }
     label { font-size: 12px; font-weight: 600; color: #374151; }
-    input { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; outline: none; }
-    input:focus { border-color: #16a34a; }
-    .btn { width: 100%; padding: 14px; background: #16a34a; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 16px; }
-    .btn:hover { background: #15803d; }
+    input, select { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; outline: none; width: 100%; }
+    input:focus, select:focus { border-color: #16a34a; }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 16px; transition: opacity .2s; }
+    .btn:hover { opacity: .9; }
+    .btn-green { background: #16a34a; color: white; }
+    .btn-blue { background: #2563eb; color: white; }
     .mensaje { text-align: center; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 12px; display: none; }
     .mensaje.ok { background: #dcfce7; color: #166534; display: block; }
     .mensaje.error { background: #fee2e2; color: #991b1b; display: block; }
+    .mensaje.warn { background: #fef9c3; color: #854d0e; display: block; }
     .producto-item { padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
     .producto-nombre { font-weight: 600; font-size: 14px; }
     .producto-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
@@ -28,30 +38,108 @@
     .stock-ok { background: #dcfce7; color: #166534; }
     .stock-warn { background: #fef9c3; color: #854d0e; }
     .stock-danger { background: #fee2e2; color: #991b1b; }
+    .alerta-banner { background: #fef9c3; border: 1px solid #f59e0b; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; font-size: 13px; color: #854d0e; font-weight: 600; display: none; }
   </style>
 </head>
 <body>
-  <header><h1>💊 FarmaStock Lily</h1><p>Sistema de inventario inteligente</p></header>
-  <div class="card">
-    <h2>➕ Agregar producto</h2>
-    <div class="form-grid">
-      <div class="form-group full"><label>Nombre</label><input type="text" id="nombre" placeholder="Ej: Paracetamol 500mg"></div>
-      <div class="form-group"><label>Marca</label><input type="text" id="marca" placeholder="Ej: Tempra"></div>
-      <div class="form-group"><label>Fecha caducidad</label><input type="date" id="fecha_caducidad"></div>
-      <div class="form-group"><label>Precio venta ($)</label><input type="number" id="precio_venta" placeholder="0.00"></div>
-      <div class="form-group"><label>Costo ($)</label><input type="number" id="costo" placeholder="0.00"></div>
-      <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
-      <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
+  <header>
+    <h1>💊 FarmaStock Lily</h1>
+    <p>Sistema de inventario inteligente</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="cambiarTab('inventario')">📦 Inventario</button>
+    <button class="tab" onclick="cambiarTab('agregar')">➕ Agregar</button>
+    <button class="tab" onclick="cambiarTab('ventas')">💰 Ventas</button>
+  </div>
+
+  <!-- INVENTARIO -->
+  <div class="panel active" id="panel-inventario">
+    <div class="alerta-banner" id="alerta-banner"></div>
+    <div class="card">
+      <h2>📦 Inventario actual</h2>
+      <div id="lista-inventario">Cargando...</div>
     </div>
-    <button class="btn" onclick="agregarProducto()">💾 Guardar en inventario</button>
-    <div class="mensaje" id="mensaje"></div>
   </div>
-  <div class="card">
-    <h2>📦 Inventario actual</h2>
-    <div id="lista-inventario">Cargando...</div>
+
+  <!-- AGREGAR PRODUCTO -->
+  <div class="panel" id="panel-agregar">
+    <div class="card">
+      <h2>➕ Agregar producto</h2>
+      <div class="form-grid">
+        <div class="form-group full"><label>Nombre</label><input type="text" id="nombre" placeholder="Ej: Paracetamol 500mg"></div>
+        <div class="form-group"><label>Marca</label><input type="text" id="marca" placeholder="Ej: Tempra"></div>
+        <div class="form-group"><label>Fecha caducidad</label><input type="date" id="fecha_caducidad"></div>
+        <div class="form-group"><label>Precio venta ($)</label><input type="number" id="precio_venta" placeholder="0.00"></div>
+        <div class="form-group"><label>Costo ($)</label><input type="number" id="costo" placeholder="0.00"></div>
+        <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
+        <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
+      </div>
+      <button class="btn btn-green" onclick="agregarProducto()">💾 Guardar en inventario</button>
+      <div class="mensaje" id="msg-agregar"></div>
+    </div>
   </div>
+
+  <!-- VENTAS -->
+  <div class="panel" id="panel-ventas">
+    <div class="card">
+      <h2>💰 Registrar venta</h2>
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Producto vendido</label>
+        <select id="venta-producto"><option value="">Selecciona un producto...</option></select>
+      </div>
+      <div class="form-group">
+        <label>Cantidad vendida</label>
+        <input type="number" id="venta-cantidad" placeholder="0" min="1">
+      </div>
+      <button class="btn btn-blue" onclick="registrarVenta()">✅ Registrar venta</button>
+      <div class="mensaje" id="msg-venta"></div>
+    </div>
+  </div>
+
   <script>
+    let productos = []
+
     cargarInventario()
+
+    function cambiarTab(tab) {
+      document.querySelectorAll('.tab').forEach((t,i) => {
+        t.classList.toggle('active', ['inventario','agregar','ventas'][i] === tab)
+      })
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+      document.getElementById('panel-' + tab).classList.add('active')
+      if (tab === 'ventas') llenarSelectProductos()
+    }
+
+    async function cargarInventario() {
+      try {
+        const res = await fetch('/inventario')
+        productos = await res.json()
+        const lista = document.getElementById('lista-inventario')
+        const banner = document.getElementById('alerta-banner')
+        const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
+        if (bajos.length > 0) {
+          banner.style.display = 'block'
+          banner.textContent = '🚨 ' + bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p => p.nombre).join(', ')
+        } else {
+          banner.style.display = 'none'
+        }
+        if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center">No hay productos aún</p>'; return }
+        lista.innerHTML = productos.map(p => {
+          const c = p.stock_actual <= p.stock_minimo ? 'stock-danger' : p.stock_actual <= p.stock_minimo * 2 ? 'stock-warn' : 'stock-ok'
+          return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Cad: ${p.fecha_caducidad} · $${p.costo}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
+        }).join('')
+      } catch(e) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
+    }
+
+    function llenarSelectProductos() {
+      const sel = document.getElementById('venta-producto')
+      sel.innerHTML = '<option value="">Selecciona un producto...</option>'
+      productos.forEach(p => {
+        sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} uds</option>`
+      })
+    }
+
     async function agregarProducto() {
       const producto = {
         nombre: document.getElementById('nombre').value,
@@ -62,34 +150,34 @@
         stock_minimo: parseInt(document.getElementById('stock_minimo').value),
         fecha_caducidad: document.getElementById('fecha_caducidad').value
       }
-      if (!producto.nombre || !producto.marca) { mostrarMensaje('Llena nombre y marca', 'error'); return }
+      if (!producto.nombre || !producto.marca) { mostrarMensaje('msg-agregar', 'Llena nombre y marca', 'error'); return }
       try {
         await fetch('/producto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(producto) })
-        mostrarMensaje('✅ ' + producto.nombre + ' guardado!', 'ok')
-        limpiarFormulario()
+        mostrarMensaje('msg-agregar', '✅ ' + producto.nombre + ' guardado!', 'ok')
+        ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value = '')
         cargarInventario()
-      } catch(err) { mostrarMensaje('❌ Error al guardar', 'error') }
+      } catch(e) { mostrarMensaje('msg-agregar', '❌ Error al guardar', 'error') }
     }
-    async function cargarInventario() {
+
+    async function registrarVenta() {
+      const producto_id = document.getElementById('venta-producto').value
+      const cantidad = parseInt(document.getElementById('venta-cantidad').value)
+      if (!producto_id || !cantidad) { mostrarMensaje('msg-venta', 'Selecciona producto y cantidad', 'error'); return }
       try {
-        const res = await fetch('/inventario')
-        const productos = await res.json()
-        const lista = document.getElementById('lista-inventario')
-        if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center">No hay productos aún</p>'; return }
-        lista.innerHTML = productos.map(p => {
-          const c = p.stock_actual <= p.stock_minimo ? 'stock-danger' : p.stock_actual <= p.stock_minimo * 2 ? 'stock-warn' : 'stock-ok'
-          return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Cad: ${p.fecha_caducidad} · $${p.costo}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
-        }).join('')
-      } catch(err) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
+        const res = await fetch('/venta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ producto_id, cantidad }) })
+        const data = await res.json()
+        const msg = data.alerta ? data.alerta : '✅ Venta registrada — Stock nuevo: ' + data.stock_nuevo
+        mostrarMensaje('msg-venta', msg, data.alerta ? 'warn' : 'ok')
+        document.getElementById('venta-cantidad').value = ''
+        cargarInventario()
+      } catch(e) { mostrarMensaje('msg-venta', '❌ Error al registrar', 'error') }
     }
-    function mostrarMensaje(texto, tipo) {
-      const m = document.getElementById('mensaje')
+
+    function mostrarMensaje(id, texto, tipo) {
+      const m = document.getElementById(id)
       m.textContent = texto
       m.className = 'mensaje ' + tipo
-      setTimeout(() => m.className = 'mensaje', 4000)
-    }
-    function limpiarFormulario() {
-      ['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value = '')
+      setTimeout(() => m.className = 'mensaje', 5000)
     }
   </script>
 </body>
