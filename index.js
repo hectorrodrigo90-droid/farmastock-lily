@@ -44,4 +44,34 @@ app.post('/producto', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`FarmaStock corriendo en http://localhost:${port}`)
+  // Registrar una venta
+app.post('/venta', async (req, res) => {
+  const { producto_id, cantidad } = req.body
+
+  const ref = db.collection('inventario').doc(producto_id)
+  const doc = await ref.get()
+
+  if (!doc.exists) {
+    return res.status(404).json({ error: 'Producto no encontrado' })
+  }
+
+  const stock_actual = doc.data().stock_actual
+  const nuevo_stock = stock_actual - cantidad
+
+  await ref.update({
+    stock_actual: nuevo_stock,
+    ultima_actualizacion: new Date()
+  })
+
+  const alerta = nuevo_stock <= doc.data().stock_minimo
+    ? '🚨 ALERTA: Stock bajo, considera comprar pronto'
+    : null
+
+  res.json({
+    mensaje: 'Venta registrada',
+    stock_anterior: stock_actual,
+    stock_nuevo: nuevo_stock,
+    alerta
+  })
+})
 })
