@@ -32,7 +32,7 @@
     .panel.active { display: block; }
     .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px #0001; }
     .card h2 { font-size: 15px; font-weight: 800; color: #1a7a5e; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .card h2 img { width: 36px; height: 36px; object-fit: contain; }
+    .card h2 img { width: 28px; height: 28px; object-fit: contain; }
     .alerta-banner {
       background: linear-gradient(135deg, #fff3cd, #ffeaa7);
       border: 2px solid #f59e0b; border-radius: 16px;
@@ -40,7 +40,7 @@
       font-size: 13px; color: #854d0e; font-weight: 700;
       display: none; align-items: center; gap: 10px;
     }
-    .alerta-banner img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; }
+    .alerta-banner img { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: span 2; }
@@ -58,7 +58,7 @@
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn:hover { transform: scale(1.01); opacity: .95; }
-    .btn img { width: 28px; height: 28px; object-fit: contain; }
+    .btn img { width: 24px; height: 24px; object-fit: contain; }
     .btn-green { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
     .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
     .mensaje {
@@ -66,7 +66,7 @@
       font-size: 13px; font-weight: 700; margin-top: 12px;
       display: none; align-items: center; justify-content: center; gap: 8px;
     }
-    .mensaje img { width: 36px; height: 36px; object-fit: contain; }
+    .mensaje img { width: 32px; height: 32px; object-fit: contain; }
     .mensaje.ok { background: #dcfce7; color: #166534; display: flex; }
     .mensaje.error { background: #fee2e2; color: #991b1b; display: flex; }
     .mensaje.warn { background: #fef9c3; color: #854d0e; display: flex; }
@@ -78,13 +78,32 @@
     .producto-item:hover { border-color: #2d9c7e; }
     .producto-nombre { font-weight: 700; font-size: 14px; color: #1a1a1a; }
     .producto-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
-    .stock-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+    .stock-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; }
     .stock-ok { background: #dcfce7; color: #166534; }
     .stock-warn { background: #fef9c3; color: #854d0e; }
     .stock-danger { background: #fee2e2; color: #991b1b; }
     .reporte-seccion { font-weight: 800; font-size: 13px; margin: 12px 0 8px; }
     .reporte-urgente { color: #991b1b; }
     .reporte-normal { color: #854d0e; }
+    .buscador {
+      padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 14px; font-family: 'Nunito', sans-serif;
+      outline: none; width: 100%; margin-bottom: 12px;
+      transition: border-color .2s;
+    }
+    .buscador:focus { border-color: #2d9c7e; }
+    .venta-item {
+      padding: 10px 14px; border: 2px solid #e0f2fe; border-radius: 12px;
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+      align-items: center; background: #f0f9ff;
+    }
+    .total-dia {
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      color: white; border-radius: 16px; padding: 16px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px; font-weight: 800;
+    }
+    .total-dia .monto { font-size: 24px; }
   </style>
 </head>
 <body>
@@ -133,6 +152,16 @@
         <div class="form-group"><label>Costo</label><input type="number" id="costo" placeholder="0.00"></div>
         <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
         <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
+        <div class="form-group full">
+          <label>Unidad de venta</label>
+          <select id="unidad">
+            <option value="pieza">Pieza</option>
+            <option value="caja">Caja</option>
+            <option value="frasco">Frasco</option>
+            <option value="sobre">Sobre</option>
+            <option value="ampolleta">Ampolleta</option>
+          </select>
+        </div>
       </div>
       <button class="btn btn-green" onclick="agregarProducto()">
         <img src="ok.png" alt="">Guardar en inventario
@@ -145,6 +174,8 @@
   <div class="panel" id="panel-ventas">
     <div class="card">
       <h2><img src="urgente.png" alt="">Registrar venta</h2>
+      <label>Buscar producto</label>
+      <input type="text" class="buscador" id="buscador-ventas" placeholder="🔍 Escribe para buscar..." oninput="filtrarProductos()">
       <div class="form-group" style="margin-bottom:12px">
         <label>Producto vendido</label>
         <select id="venta-producto"><option value="">Selecciona un producto...</option></select>
@@ -163,6 +194,10 @@
   <!-- REPORTE -->
   <div class="panel" id="panel-reporte">
     <div class="card">
+      <h2><img src="rojo_reporte.png" alt="">Ventas de hoy</h2>
+      <div id="resumen-dia">Cargando...</div>
+    </div>
+    <div class="card">
       <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
       <div id="lista-reporte">Cargando...</div>
     </div>
@@ -171,6 +206,7 @@
   <script>
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
     let productos = []
+    let productosFiltrados = []
     cargarInventario()
 
     function cambiarTab(tab) {
@@ -179,14 +215,15 @@
       })
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
       document.getElementById('panel-' + tab).classList.add('active')
-      if (tab === 'ventas') llenarSelectProductos()
-      if (tab === 'reporte') cargarReporte()
+      if (tab === 'ventas') { llenarSelectProductos(); productosFiltrados = [...productos] }
+      if (tab === 'reporte') { cargarReporte(); cargarVentasHoy() }
     }
 
     async function cargarInventario() {
       try {
         const res = await fetch('/inventario')
         productos = await res.json()
+        productosFiltrados = [...productos]
         const lista = document.getElementById('lista-inventario')
         const banner = document.getElementById('alerta-banner')
         const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
@@ -197,15 +234,22 @@
         if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'; return }
         lista.innerHTML = productos.map(p => {
           const c = p.stock_actual <= p.stock_minimo ? 'stock-danger' : p.stock_actual <= p.stock_minimo * 2 ? 'stock-warn' : 'stock-ok'
-          return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Cad: ${p.fecha_caducidad} · $${p.costo}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
+          return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · ${p.unidad || 'pieza'} · Cad: ${p.fecha_caducidad}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
         }).join('')
       } catch(e) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
     }
 
     function llenarSelectProductos() {
       const sel = document.getElementById('venta-producto')
+      const lista = productosFiltrados.length ? productosFiltrados : productos
       sel.innerHTML = '<option value="">Selecciona un producto...</option>'
-      productos.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} uds</option>` })
+      lista.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} ${p.unidad || 'pza'}</option>` })
+    }
+
+    function filtrarProductos() {
+      const q = document.getElementById('buscador-ventas').value.toLowerCase()
+      productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(q) || p.marca.toLowerCase().includes(q))
+      llenarSelectProductos()
     }
 
     async function agregarProducto() {
@@ -216,6 +260,7 @@
         costo: parseFloat(document.getElementById('costo').value),
         stock_actual: parseInt(document.getElementById('stock_actual').value),
         stock_minimo: parseInt(document.getElementById('stock_minimo').value),
+        unidad: document.getElementById('unidad').value,
         fecha_caducidad: document.getElementById('fecha_caducidad').value
       }
       if (!producto.nombre || !producto.marca) { mostrarMensaje('msg-agregar', 'Llena nombre y marca', 'error'); return }
@@ -223,6 +268,7 @@
         await fetch('/producto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(producto) })
         mostrarMensaje('msg-agregar', '¡Producto guardado!', 'ok', 'ok.png')
         ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value = '')
+        document.getElementById('unidad').value = 'pieza'
         cargarInventario()
       } catch(e) { mostrarMensaje('msg-agregar', 'Error al guardar', 'error') }
     }
@@ -240,8 +286,38 @@
           mostrarMensaje('msg-venta', '¡Venta registrada! Stock: ' + data.stock_nuevo, 'ok', 'galan.png')
         }
         document.getElementById('venta-cantidad').value = ''
+        document.getElementById('buscador-ventas').value = ''
+        productosFiltrados = [...productos]
         cargarInventario()
+        llenarSelectProductos()
       } catch(e) { mostrarMensaje('msg-venta', 'Error al registrar', 'error') }
+    }
+
+    async function cargarVentasHoy() {
+      try {
+        const res = await fetch('/ventas-hoy')
+        const data = await res.json()
+        const div = document.getElementById('resumen-dia')
+        if (data.ventas.length === 0) {
+          div.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay ventas registradas hoy</p>'
+          return
+        }
+        div.innerHTML = `
+          <div class="total-dia">
+            <span>💰 Total del día</span>
+            <span class="monto">$${data.total_dia.toFixed(2)}</span>
+          </div>
+          ${data.ventas.map(v => `
+            <div class="venta-item">
+              <div>
+                <div class="producto-nombre">${v.nombre}</div>
+                <div class="producto-meta">${v.marca} · ${v.cantidad} ${v.unidad || 'pza'}</div>
+              </div>
+              <span class="stock-badge stock-ok">$${(v.total || 0).toFixed(2)}</span>
+            </div>
+          `).join('')}
+        `
+      } catch(e) { document.getElementById('resumen-dia').innerHTML = 'Error cargando ventas' }
     }
 
     async function cargarReporte() {
@@ -251,11 +327,11 @@
         let html = ''
         if (data.urgentes.length > 0) {
           html += '<div class="reporte-seccion reporte-urgente">🚨 Comprar HOY</div>'
-          html += data.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
+          html += data.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
         }
         if (data.normales.length > 0) {
           html += '<div class="reporte-seccion reporte-normal">📦 Comprar el lunes</div>'
-          html += data.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
+          html += data.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
         }
         if (html === '') html = '<p style="color:#6b7280;text-align:center;padding:20px">✅ Todo el inventario está bien</p>'
         document.getElementById('lista-reporte').innerHTML = html

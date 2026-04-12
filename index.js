@@ -35,11 +35,12 @@ app.post('/producto', async (req, res) => {
     costo: req.body.costo,
     stock_actual: req.body.stock_actual,
     stock_minimo: req.body.stock_minimo,
+    unidad: req.body.unidad || 'pieza',
     fecha_caducidad: req.body.fecha_caducidad,
     ultima_actualizacion: new Date()
   }
   const ref = await db.collection('inventario').add(producto)
-  res.json({ mensaje: 'Producto guardado en la nube', id: ref.id, producto })
+  res.json({ mensaje: 'Producto guardado', id: ref.id, producto })
 })
 
 app.post('/venta', async (req, res) => {
@@ -50,6 +51,19 @@ app.post('/venta', async (req, res) => {
   const stock_actual = doc.data().stock_actual
   const nuevo_stock = stock_actual - cantidad
   await ref.update({ stock_actual: nuevo_stock, ultima_actualizacion: new Date() })
+
+  // Guardar en historial de ventas
+  await db.collection('ventas').add({
+    producto_id,
+    nombre: doc.data().nombre,
+    marca: doc.data().marca,
+    unidad: doc.data().unidad || 'pieza',
+    cantidad,
+    precio_venta: doc.data().precio_venta,
+    total: doc.data().precio_venta * cantidad,
+    fecha: new Date()
+  })
+
   const alerta = nuevo_stock <= doc.data().stock_minimo
     ? '🚨 ALERTA: Stock bajo, considera comprar pronto'
     : null
@@ -66,6 +80,22 @@ app.get('/reporte', async (req, res) => {
     else if (p.stock_actual <= p.stock_minimo * 2) normales.push(p)
   })
   res.json({ fecha: new Date(), urgentes, normales, total_productos_revisar: urgentes.length + normales.length })
+})
+
+app.get('/ventas-hoy', async (req, res) => {
+  const hoy = new Date()
+  hoy.setHours(0, 0, 0, 0)
+  const snapshot = await db.collection('ventas')
+    .where('fecha', '>=', hoy)
+    .get()
+  const ventas = []
+  let total_dia = 0
+  snapshot.forEach(doc => {
+    const v = { id: doc.id, ...doc.data() }
+    ventas.push(v)
+    total_dia += v.total || 0
+  })
+  res.json({ ventas, total_dia })
 })
 
 app.listen(port, () => {
