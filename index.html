@@ -4,86 +4,139 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FarmaStock Lily</title>
+  <link rel="manifest" href="/manifest.json">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: sans-serif; background: #f0fdf4; padding: 20px; }
-    header { background: #16a34a; color: white; padding: 20px; border-radius: 16px; margin-bottom: 24px; text-align: center; }
-    header h1 { font-size: 24px; }
-    header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
-    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .tab { flex: 1; padding: 12px; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; background: white; color: #6b7280; transition: all .2s; }
-    .tab.active { background: #16a34a; color: white; }
-    .panel { display: none; }
+    body { font-family: 'Nunito', sans-serif; background: #e8f5f0; min-height: 100vh; }
+    header {
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      padding: 24px 20px 20px; text-align: center;
+      border-radius: 0 0 30px 30px;
+      box-shadow: 0 4px 20px #0003; margin-bottom: 16px;
+    }
+    .header-logo { width: 160px; margin-bottom: 10px; filter: drop-shadow(0 4px 8px #0004); }
+    header h1 { font-size: 22px; font-weight: 800; color: white; }
+    header p { font-size: 12px; color: #b2ffe0; margin-top: 2px; }
+    .tabs { display: flex; gap: 6px; padding: 0 16px 12px; }
+    .tab {
+      flex: 1; padding: 8px 4px; border: none; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800;
+      cursor: pointer; background: white; color: #6b7280; transition: all .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      box-shadow: 0 2px 8px #0001; line-height: 1.2;
+    }
+    .tab img { width: 56px; height: 56px; object-fit: contain; }
+    .tab.active { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; box-shadow: 0 4px 12px #2d9c7e44; }
+    .panel { display: none; padding: 0 16px 20px; }
     .panel.active { display: block; }
-    .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px #0001; }
-    .card h2 { font-size: 16px; color: #166534; margin-bottom: 16px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px #0001; }
+    .card h2 { font-size: 15px; font-weight: 800; color: #1a7a5e; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .card h2 img { width: 36px; height: 36px; object-fit: contain; }
+    .alerta-banner {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      border: 2px solid #f59e0b; border-radius: 16px;
+      padding: 14px 16px; margin-bottom: 14px;
+      font-size: 13px; color: #854d0e; font-weight: 700;
+      display: none; align-items: center; gap: 10px;
+    }
+    .alerta-banner img { width: 52px; height: 52px; object-fit: contain; flex-shrink: 0; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: span 2; }
-    label { font-size: 12px; font-weight: 600; color: #374151; }
-    input, select { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; outline: none; width: 100%; }
-    input:focus, select:focus { border-color: #16a34a; }
-    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 16px; transition: opacity .2s; }
-    .btn:hover { opacity: .9; }
-    .btn-green { background: #16a34a; color: white; }
-    .btn-blue { background: #2563eb; color: white; }
-    .mensaje { text-align: center; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-top: 12px; display: none; }
-    .mensaje.ok { background: #dcfce7; color: #166534; display: block; }
-    .mensaje.error { background: #fee2e2; color: #991b1b; display: block; }
-    .mensaje.warn { background: #fef9c3; color: #854d0e; display: block; }
-    .producto-item { padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .producto-nombre { font-weight: 600; font-size: 14px; }
-    .producto-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
-    .stock-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    label { font-size: 11px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: .5px; }
+    input, select {
+      padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 14px; font-family: 'Nunito', sans-serif;
+      outline: none; width: 100%; transition: border-color .2s;
+    }
+    input:focus, select:focus { border-color: #2d9c7e; }
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 14px;
+      transition: transform .15s, opacity .2s; font-family: 'Nunito', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:hover { transform: scale(1.01); opacity: .95; }
+    .btn img { width: 28px; height: 28px; object-fit: contain; }
+    .btn-green { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
+    .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+    .mensaje {
+      text-align: center; padding: 12px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; margin-top: 12px;
+      display: none; align-items: center; justify-content: center; gap: 8px;
+    }
+    .mensaje img { width: 36px; height: 36px; object-fit: contain; }
+    .mensaje.ok { background: #dcfce7; color: #166534; display: flex; }
+    .mensaje.error { background: #fee2e2; color: #991b1b; display: flex; }
+    .mensaje.warn { background: #fef9c3; color: #854d0e; display: flex; }
+    .producto-item {
+      padding: 12px 14px; border: 2px solid #f0fdf4; border-radius: 14px;
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+      align-items: center; background: #f8fffe; transition: border-color .2s;
+    }
+    .producto-item:hover { border-color: #2d9c7e; }
+    .producto-nombre { font-weight: 700; font-size: 14px; color: #1a1a1a; }
+    .producto-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
+    .stock-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; }
     .stock-ok { background: #dcfce7; color: #166534; }
     .stock-warn { background: #fef9c3; color: #854d0e; }
     .stock-danger { background: #fee2e2; color: #991b1b; }
-    .alerta-banner { background: #fef9c3; border: 1px solid #f59e0b; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; font-size: 13px; color: #854d0e; font-weight: 600; display: none; }
+    .reporte-seccion { font-weight: 800; font-size: 13px; margin: 12px 0 8px; }
+    .reporte-urgente { color: #991b1b; }
+    .reporte-normal { color: #854d0e; }
   </style>
-  <link rel="manifest" href="/manifest.json">
 </head>
 <body>
   <header>
-    <h1>💊 FarmaStock Lily</h1>
+    <img src="logo_familia.png" class="header-logo" alt="Farmacia Lily">
+    <h1>FarmaStock Lily</h1>
     <p>Sistema de inventario inteligente</p>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="cambiarTab('inventario')">📦 Inventario</button>
-    <button class="tab" onclick="cambiarTab('agregar')">➕ Agregar</button>
-    <button class="tab" onclick="cambiarTab('ventas')">💰 Ventas</button>
-    <button class="tab" onclick="cambiarTab('reporte')">📋 Reporte</button>
+    <button class="tab active" onclick="cambiarTab('inventario')">
+      <img src="rojo_inicio.png" alt="">Inicio
+    </button>
+    <button class="tab" onclick="cambiarTab('agregar')">
+      <img src="galan.png" alt="">Agregar
+    </button>
+    <button class="tab" onclick="cambiarTab('ventas')">
+      <img src="urgente.png" alt="">Ventas
+    </button>
+    <button class="tab" onclick="cambiarTab('reporte')">
+      <img src="rojo_reporte.png" alt="">Reporte
+    </button>
   </div>
-<!-- REPORTE -->
-<div class="panel" id="panel-reporte">
-  <div class="card">
-    <h2>📋 Lista del lunes</h2>
-    <div id="lista-reporte">Cargando...</div>
-  </div>
-</div>
+
   <!-- INVENTARIO -->
   <div class="panel active" id="panel-inventario">
-    <div class="alerta-banner" id="alerta-banner"></div>
+    <div class="alerta-banner" id="alerta-banner">
+      <img src="alerta.png" alt="alerta">
+      <span id="alerta-texto"></span>
+    </div>
     <div class="card">
-      <h2>📦 Inventario actual</h2>
+      <h2><img src="rojo_inicio.png" alt="">Inventario actual</h2>
       <div id="lista-inventario">Cargando...</div>
     </div>
   </div>
 
-  <!-- AGREGAR PRODUCTO -->
+  <!-- AGREGAR -->
   <div class="panel" id="panel-agregar">
     <div class="card">
-      <h2>➕ Agregar producto</h2>
+      <h2><img src="galan.png" alt="">Agregar producto</h2>
       <div class="form-grid">
         <div class="form-group full"><label>Nombre</label><input type="text" id="nombre" placeholder="Ej: Paracetamol 500mg"></div>
         <div class="form-group"><label>Marca</label><input type="text" id="marca" placeholder="Ej: Tempra"></div>
-        <div class="form-group"><label>Fecha caducidad</label><input type="date" id="fecha_caducidad"></div>
-        <div class="form-group"><label>Precio venta ($)</label><input type="number" id="precio_venta" placeholder="0.00"></div>
-        <div class="form-group"><label>Costo ($)</label><input type="number" id="costo" placeholder="0.00"></div>
+        <div class="form-group"><label>Caducidad</label><input type="date" id="fecha_caducidad"></div>
+        <div class="form-group"><label>Precio venta</label><input type="number" id="precio_venta" placeholder="0.00"></div>
+        <div class="form-group"><label>Costo</label><input type="number" id="costo" placeholder="0.00"></div>
         <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
         <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
       </div>
-      <button class="btn btn-green" onclick="agregarProducto()">💾 Guardar en inventario</button>
+      <button class="btn btn-green" onclick="agregarProducto()">
+        <img src="ok.png" alt="">Guardar en inventario
+      </button>
       <div class="mensaje" id="msg-agregar"></div>
     </div>
   </div>
@@ -91,7 +144,7 @@
   <!-- VENTAS -->
   <div class="panel" id="panel-ventas">
     <div class="card">
-      <h2>💰 Registrar venta</h2>
+      <h2><img src="urgente.png" alt="">Registrar venta</h2>
       <div class="form-group" style="margin-bottom:12px">
         <label>Producto vendido</label>
         <select id="venta-producto"><option value="">Selecciona un producto...</option></select>
@@ -100,22 +153,29 @@
         <label>Cantidad vendida</label>
         <input type="number" id="venta-cantidad" placeholder="0" min="1">
       </div>
-      <button class="btn btn-blue" onclick="registrarVenta()">✅ Registrar venta</button>
+      <button class="btn btn-blue" onclick="registrarVenta()">
+        <img src="galan.png" alt="">Registrar venta
+      </button>
       <div class="mensaje" id="msg-venta"></div>
     </div>
   </div>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
-    let productos = []
+  <!-- REPORTE -->
+  <div class="panel" id="panel-reporte">
+    <div class="card">
+      <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
+      <div id="lista-reporte">Cargando...</div>
+    </div>
+  </div>
 
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
+    let productos = []
     cargarInventario()
 
     function cambiarTab(tab) {
       document.querySelectorAll('.tab').forEach((t,i) => {
-        t.classList.toggle('active', ['inventario','agregar','ventas'][i] === tab)
+        t.classList.toggle('active', ['inventario','agregar','ventas','reporte'][i] === tab)
       })
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
       document.getElementById('panel-' + tab).classList.add('active')
@@ -131,12 +191,10 @@
         const banner = document.getElementById('alerta-banner')
         const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
         if (bajos.length > 0) {
-          banner.style.display = 'block'
-          banner.textContent = '🚨 ' + bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p => p.nombre).join(', ')
-        } else {
-          banner.style.display = 'none'
-        }
-        if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center">No hay productos aún</p>'; return }
+          banner.style.display = 'flex'
+          document.getElementById('alerta-texto').textContent = bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p => p.nombre).join(', ')
+        } else { banner.style.display = 'none' }
+        if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'; return }
         lista.innerHTML = productos.map(p => {
           const c = p.stock_actual <= p.stock_minimo ? 'stock-danger' : p.stock_actual <= p.stock_minimo * 2 ? 'stock-warn' : 'stock-ok'
           return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Cad: ${p.fecha_caducidad} · $${p.costo}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
@@ -147,9 +205,7 @@
     function llenarSelectProductos() {
       const sel = document.getElementById('venta-producto')
       sel.innerHTML = '<option value="">Selecciona un producto...</option>'
-      productos.forEach(p => {
-        sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} uds</option>`
-      })
+      productos.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} uds</option>` })
     }
 
     async function agregarProducto() {
@@ -165,10 +221,10 @@
       if (!producto.nombre || !producto.marca) { mostrarMensaje('msg-agregar', 'Llena nombre y marca', 'error'); return }
       try {
         await fetch('/producto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(producto) })
-        mostrarMensaje('msg-agregar', '✅ ' + producto.nombre + ' guardado!', 'ok')
+        mostrarMensaje('msg-agregar', '¡Producto guardado!', 'ok', 'ok.png')
         ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value = '')
         cargarInventario()
-      } catch(e) { mostrarMensaje('msg-agregar', '❌ Error al guardar', 'error') }
+      } catch(e) { mostrarMensaje('msg-agregar', 'Error al guardar', 'error') }
     }
 
     async function registrarVenta() {
@@ -178,44 +234,40 @@
       try {
         const res = await fetch('/venta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ producto_id, cantidad }) })
         const data = await res.json()
-        const msg = data.alerta ? data.alerta : '✅ Venta registrada — Stock nuevo: ' + data.stock_nuevo
-        mostrarMensaje('msg-venta', msg, data.alerta ? 'warn' : 'ok')
+        if (data.alerta) {
+          mostrarMensaje('msg-venta', data.alerta, 'warn', 'alerta.png')
+        } else {
+          mostrarMensaje('msg-venta', '¡Venta registrada! Stock: ' + data.stock_nuevo, 'ok', 'galan.png')
+        }
         document.getElementById('venta-cantidad').value = ''
         cargarInventario()
-      } catch(e) { mostrarMensaje('msg-venta', '❌ Error al registrar', 'error') }
+      } catch(e) { mostrarMensaje('msg-venta', 'Error al registrar', 'error') }
     }
 
-    function mostrarMensaje(id, texto, tipo) {
+    async function cargarReporte() {
+      try {
+        const res = await fetch('/reporte')
+        const data = await res.json()
+        let html = ''
+        if (data.urgentes.length > 0) {
+          html += '<div class="reporte-seccion reporte-urgente">🚨 Comprar HOY</div>'
+          html += data.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
+        }
+        if (data.normales.length > 0) {
+          html += '<div class="reporte-seccion reporte-normal">📦 Comprar el lunes</div>'
+          html += data.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
+        }
+        if (html === '') html = '<p style="color:#6b7280;text-align:center;padding:20px">✅ Todo el inventario está bien</p>'
+        document.getElementById('lista-reporte').innerHTML = html
+      } catch(e) { document.getElementById('lista-reporte').innerHTML = 'Error cargando reporte' }
+    }
+
+    function mostrarMensaje(id, texto, tipo, img) {
       const m = document.getElementById(id)
-      m.textContent = texto
+      m.innerHTML = img ? `<img src="${img}" alt="">${texto}` : texto
       m.className = 'mensaje ' + tipo
       setTimeout(() => m.className = 'mensaje', 5000)
     }
-    async function cargarReporte() {
-  const res = await fetch('/reporte')
-  const data = await res.json()
-  let html = ''
-  if (data.urgentes.length > 0) {
-    html += '<p style="color:#991b1b;font-weight:700;margin-bottom:8px">🚨 Comprar HOY</p>'
-    html += data.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
-  }
-  if (data.normales.length > 0) {
-    html += '<p style="color:#854d0e;font-weight:700;margin:12px 0 8px">📦 Comprar el lunes</p>'
-    html += data.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
-  }
-  if (html === '') html = '<p style="color:#6b7280;text-align:center">✅ Todo el inventario está bien</p>'
-  document.getElementById('lista-reporte').innerHTML = html
-}
   </script>
 </body>
-<div id="inicio-bienvenida" style="text-align: center; padding: 20px;">
-    <img src="rojo_inicio.png" alt="Bienvenida" style="max-width: 120px; margin-bottom: 10px;">
-    <h2 style="color: var(--primary-green);">¡Hola, Familia!</h2>
-    <p>¿Qué vamos a mover hoy en Farmacia Lily?</p>
-    
-    <button onclick="showTab('inventario')" style="background-color: #ff4757; color: white; border: none; padding: 15px 25px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 20px auto;">
-        <img src="alerta.png" style="width: 30px; height: auto;">
-        ¡Empezar Inventario!
-    </button>
-</div>
 </html>
