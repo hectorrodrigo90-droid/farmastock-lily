@@ -16,10 +16,10 @@ app.use(express.static(__dirname))
 
 // ─── USUARIOS ── cambia nombres y PINs como quieras ──────────────────────────
 const USUARIOS = [
-  { pin: '1111', nombre: 'Mamá' },
-  { pin: '2222', nombre: 'Papá' },
-  { pin: '3333', nombre: 'Hija' },
-  { pin: '4444', nombre: 'Empleado' }
+  { pin: '4690', nombre: 'Rodrigo' },
+  { pin: '2222', nombre: 'Mama' },
+  { pin: '3333', nombre: 'Eli' },
+  { pin: '4444', nombre: 'Pepe' }
 ]
 const PIN_ADMIN = '9999' // para limpiar datos de prueba
 
