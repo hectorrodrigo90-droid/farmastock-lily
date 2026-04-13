@@ -10,43 +10,47 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Nunito', sans-serif; background: #e8f5f0; min-height: 100vh; }
 
-    /* LOGIN */
+    /* ── LOGIN ── */
     #pantalla-login {
-      position: fixed; inset: 0; background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       z-index: 999; padding: 30px;
     }
-    #pantalla-login img { width: 140px; margin-bottom: 16px; filter: drop-shadow(0 4px 12px #0005); }
-    #pantalla-login h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-    #pantalla-login p { color: #b2ffe0; font-size: 13px; margin-bottom: 28px; }
+    #pantalla-login img.logo-login { width: 130px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px #0005); }
+    #pantalla-login h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    #pantalla-login p { color: #b2ffe0; font-size: 13px; margin-bottom: 24px; }
     .pin-display {
       background: #ffffff22; border-radius: 16px; padding: 14px 30px;
-      font-size: 36px; letter-spacing: 12px; color: white; font-weight: 800;
-      margin-bottom: 24px; min-width: 180px; text-align: center; min-height: 64px;
+      font-size: 36px; letter-spacing: 14px; color: white; font-weight: 800;
+      margin-bottom: 22px; min-width: 190px; text-align: center; min-height: 66px;
     }
-    .pin-teclado {
-      display: grid; grid-template-columns: repeat(3, 72px); gap: 10px;
-    }
+    .pin-teclado { display: grid; grid-template-columns: repeat(3, 72px); gap: 10px; }
     .pin-btn {
       height: 64px; border: none; border-radius: 16px;
       background: white; color: #1a7a5e; font-size: 22px; font-weight: 800;
-      cursor: pointer; transition: transform .1s, opacity .2s;
-      font-family: 'Nunito', sans-serif;
+      cursor: pointer; transition: transform .1s; font-family: 'Nunito', sans-serif;
     }
-    .pin-btn:active { transform: scale(.93); opacity: .8; }
+    .pin-btn:active { transform: scale(.91); }
     .pin-btn.borrar { background: #fee2e2; color: #991b1b; }
-    .pin-btn.entrar { background: #dcfce7; color: #166534; grid-column: span 3; height: 52px; font-size: 16px; }
-    #pin-error { color: #fca5a5; font-size: 13px; font-weight: 700; margin-top: 14px; min-height: 20px; }
+    .pin-btn.entrar { background: #dcfce7; color: #166534; grid-column: span 3; height: 52px; font-size: 15px; }
+    #pin-error { color: #fca5a5; font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 20px; text-align:center; }
 
+    /* ── HEADER ── */
     header {
       background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
-      padding: 24px 20px 20px; text-align: center;
+      padding: 20px 20px 16px; text-align: center;
       border-radius: 0 0 30px 30px;
       box-shadow: 0 4px 20px #0003; margin-bottom: 16px;
     }
-    .header-logo { width: 160px; margin-bottom: 10px; filter: drop-shadow(0 4px 8px #0004); }
-    header h1 { font-size: 22px; font-weight: 800; color: white; }
-    header p { font-size: 12px; color: #b2ffe0; margin-top: 2px; }
+    .header-logo { width: 140px; margin-bottom: 8px; filter: drop-shadow(0 4px 8px #0004); }
+    header h1 { font-size: 21px; font-weight: 800; color: white; }
+    .usuario-badge {
+      display: inline-block; background: #ffffff22; border-radius: 20px;
+      padding: 3px 12px; font-size: 11px; color: #b2ffe0; font-weight: 700; margin-top: 4px;
+    }
+
+    /* ── TABS ── */
     .tabs { display: flex; gap: 6px; padding: 0 16px 12px; }
     .tab {
       flex: 1; padding: 8px 4px; border: none; border-radius: 14px;
@@ -55,21 +59,27 @@
       display: flex; flex-direction: column; align-items: center; gap: 2px;
       box-shadow: 0 2px 8px #0001; line-height: 1.2;
     }
-    .tab img { width: 56px; height: 56px; object-fit: contain; }
+    .tab img { width: 50px; height: 50px; object-fit: contain; }
     .tab.active { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; box-shadow: 0 4px 12px #2d9c7e44; }
-    .panel { display: none; padding: 0 16px 20px; }
+
+    /* ── PANELS ── */
+    .panel { display: none; padding: 0 16px 24px; }
     .panel.active { display: block; }
-    .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px #0001; }
+    .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 12px #0001; }
     .card h2 { font-size: 15px; font-weight: 800; color: #1a7a5e; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .card h2 img { width: 28px; height: 28px; object-fit: contain; }
+    .card h2 img { width: 26px; height: 26px; object-fit: contain; }
+
+    /* ── ALERTAS ── */
     .alerta-banner {
       background: linear-gradient(135deg, #fff3cd, #ffeaa7);
       border: 2px solid #f59e0b; border-radius: 16px;
-      padding: 14px 16px; margin-bottom: 14px;
+      padding: 12px 16px; margin-bottom: 14px;
       font-size: 13px; color: #854d0e; font-weight: 700;
       display: none; align-items: center; gap: 10px;
     }
-    .alerta-banner img { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+    .alerta-banner img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
+
+    /* ── FORMS ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: span 2; }
@@ -80,531 +90,554 @@
       outline: none; width: 100%; transition: border-color .2s;
     }
     input:focus, select:focus { border-color: #2d9c7e; }
+
+    /* ── BUTTONS ── */
     .btn {
-      width: 100%; padding: 14px; border: none; border-radius: 14px;
-      font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 14px;
+      width: 100%; padding: 13px; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px;
       transition: transform .15s, opacity .2s; font-family: 'Nunito', sans-serif;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn:hover { transform: scale(1.01); opacity: .95; }
-    .btn img { width: 24px; height: 24px; object-fit: contain; }
-    .btn-green { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
-    .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
-    .btn-red { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
+    .btn:active { transform: scale(.98); opacity: .9; }
+    .btn img { width: 22px; height: 22px; object-fit: contain; }
+    .btn-green  { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
+    .btn-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+    .btn-red    { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
     .btn-orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+
+    /* ── TOP 5 ACCESO RÁPIDO ── */
+    .top5-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .top5-btn {
+      padding: 12px 8px; border: 2px solid #d1fae5; border-radius: 14px;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      cursor: pointer; text-align: center; transition: all .15s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .top5-btn:active { transform: scale(.95); border-color: #2d9c7e; }
+    .top5-btn .top5-nombre { font-size: 12px; font-weight: 800; color: #166534; line-height: 1.2; margin-bottom: 3px; }
+    .top5-btn .top5-precio { font-size: 15px; font-weight: 800; color: #2d9c7e; }
+    .top5-btn .top5-stock  { font-size: 10px; color: #6b7280; margin-top: 2px; }
+
+    /* ── MENSAJES ── */
     .mensaje {
-      text-align: center; padding: 12px; border-radius: 12px;
-      font-size: 13px; font-weight: 700; margin-top: 12px;
+      text-align: center; padding: 10px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; margin-top: 10px;
       display: none; align-items: center; justify-content: center; gap: 8px;
     }
-    .mensaje img { width: 32px; height: 32px; object-fit: contain; }
-    .mensaje.ok { background: #dcfce7; color: #166534; display: flex; }
+    .mensaje img { width: 28px; height: 28px; object-fit: contain; }
+    .mensaje.ok    { background: #dcfce7; color: #166534; display: flex; }
     .mensaje.error { background: #fee2e2; color: #991b1b; display: flex; }
-    .mensaje.warn { background: #fef9c3; color: #854d0e; display: flex; }
+    .mensaje.warn  { background: #fef9c3; color: #854d0e; display: flex; }
+
+    /* ── LISTAS ── */
     .producto-item {
-      padding: 12px 14px; border: 2px solid #f0fdf4; border-radius: 14px;
+      padding: 11px 13px; border: 2px solid #f0fdf4; border-radius: 14px;
       margin-bottom: 8px; display: flex; justify-content: space-between;
-      align-items: center; background: #f8fffe; transition: border-color .2s;
+      align-items: center; background: #f8fffe;
     }
-    .producto-item:hover { border-color: #2d9c7e; }
     .producto-nombre { font-weight: 700; font-size: 14px; color: #1a1a1a; }
-    .producto-meta { font-size: 11px; color: #6b7280; margin-top: 2px; }
-    .stock-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; }
-    .stock-ok { background: #dcfce7; color: #166534; }
-    .stock-warn { background: #fef9c3; color: #854d0e; }
+    .producto-meta   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+    .stock-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .stock-ok     { background: #dcfce7; color: #166534; }
+    .stock-warn   { background: #fef9c3; color: #854d0e; }
     .stock-danger { background: #fee2e2; color: #991b1b; }
-    .reporte-seccion { font-weight: 800; font-size: 13px; margin: 12px 0 8px; }
-    .reporte-urgente { color: #991b1b; }
-    .reporte-normal { color: #854d0e; }
-    .buscador {
-      padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 12px;
-      font-size: 14px; font-family: 'Nunito', sans-serif;
-      outline: none; width: 100%; margin-bottom: 12px;
-      transition: border-color .2s;
-    }
-    .buscador:focus { border-color: #2d9c7e; }
+
     .venta-item {
-      padding: 10px 14px; border: 2px solid #e0f2fe; border-radius: 12px;
+      padding: 10px 13px; border: 2px solid #e0f2fe; border-radius: 12px;
       margin-bottom: 8px; display: flex; justify-content: space-between;
       align-items: center; background: #f0f9ff;
     }
     .gasto-item {
-      padding: 10px 14px; border: 2px solid #fee2e2; border-radius: 12px;
-      margin-bottom: 8px; display: flex; justify-content: space-between;
+      padding: 10px 13px; border: 2px solid #fee2e2; border-radius: 12px;
+      margin-bottom: 6px; display: flex; justify-content: space-between;
       align-items: center; background: #fff5f5;
     }
-    .total-dia {
-      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
-      color: white; border-radius: 16px; padding: 16px 20px;
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 10px; font-weight: 800;
+    .retiro-item {
+      padding: 10px 13px; border: 2px solid #fde68a; border-radius: 12px;
+      margin-bottom: 6px; display: flex; justify-content: space-between;
+      align-items: center; background: #fffbeb;
     }
-    .total-dia .monto { font-size: 24px; }
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .stat-box {
-      border-radius: 16px; padding: 14px 12px; text-align: center;
-    }
-    .stat-box .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; opacity: .8; }
+
+    /* ── STATS ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .stat-box  { border-radius: 16px; padding: 14px 10px; text-align: center; }
+    .stat-box .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; opacity: .75; }
     .stat-box .stat-valor { font-size: 20px; font-weight: 800; }
-    .stat-ventas { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+    .stat-ventas   { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
     .stat-ganancia { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
-    .stat-gastos { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
-    .stat-neto { background: linear-gradient(135deg, #fef9c3, #fde68a); color: #854d0e; }
+    .stat-gastos   { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+    .stat-caja     { background: linear-gradient(135deg, #fef9c3, #fde68a); color: #854d0e; }
+
+    /* ── CAJA GRANDE ── */
+    .caja-banner {
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      color: white; border-radius: 18px; padding: 18px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; font-weight: 800;
+    }
+    .caja-banner .caja-label { font-size: 13px; opacity: .85; }
+    .caja-banner .caja-monto { font-size: 28px; }
+
+    .reporte-seccion { font-weight: 800; font-size: 13px; margin: 12px 0 8px; }
+    .reporte-urgente { color: #991b1b; }
+    .reporte-normal  { color: #854d0e; }
+    .buscador {
+      padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 14px; font-family: 'Nunito', sans-serif;
+      outline: none; width: 100%; margin-bottom: 12px; transition: border-color .2s;
+    }
+    .buscador:focus { border-color: #2d9c7e; }
+    .seccion-titulo { font-size: 12px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; margin: 14px 0 8px; }
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA LOGIN -->
-  <div id="pantalla-login">
-    <img src="logo_familia.png" alt="Farmacia Lily">
-    <h2>FarmaStock Lily 🦜</h2>
-    <p>Ingresa tu PIN de 4 dígitos</p>
-    <div class="pin-display" id="pin-display">_ _ _ _</div>
-    <div class="pin-teclado">
-      <button class="pin-btn" onclick="pinPresionar('1')">1</button>
-      <button class="pin-btn" onclick="pinPresionar('2')">2</button>
-      <button class="pin-btn" onclick="pinPresionar('3')">3</button>
-      <button class="pin-btn" onclick="pinPresionar('4')">4</button>
-      <button class="pin-btn" onclick="pinPresionar('5')">5</button>
-      <button class="pin-btn" onclick="pinPresionar('6')">6</button>
-      <button class="pin-btn" onclick="pinPresionar('7')">7</button>
-      <button class="pin-btn" onclick="pinPresionar('8')">8</button>
-      <button class="pin-btn" onclick="pinPresionar('9')">9</button>
-      <button class="pin-btn borrar" onclick="pinBorrar()">⌫</button>
-      <button class="pin-btn" onclick="pinPresionar('0')">0</button>
-      <button class="pin-btn" onclick="pinPresionar('')" style="background:#e5e7eb"></button>
-      <button class="pin-btn entrar" onclick="pinEntrar()">✅ Entrar</button>
-    </div>
-    <div id="pin-error"></div>
+<!-- ════════ LOGIN ════════ -->
+<div id="pantalla-login">
+  <img src="logo_familia.png" class="logo-login" alt="Farmacia Lily">
+  <h2>FarmaStock Lily 🦜</h2>
+  <p>Ingresa tu PIN de 4 dígitos</p>
+  <div class="pin-display" id="pin-display">_ _ _ _</div>
+  <div class="pin-teclado">
+    <button class="pin-btn" onclick="pinP('1')">1</button>
+    <button class="pin-btn" onclick="pinP('2')">2</button>
+    <button class="pin-btn" onclick="pinP('3')">3</button>
+    <button class="pin-btn" onclick="pinP('4')">4</button>
+    <button class="pin-btn" onclick="pinP('5')">5</button>
+    <button class="pin-btn" onclick="pinP('6')">6</button>
+    <button class="pin-btn" onclick="pinP('7')">7</button>
+    <button class="pin-btn" onclick="pinP('8')">8</button>
+    <button class="pin-btn" onclick="pinP('9')">9</button>
+    <button class="pin-btn borrar" onclick="pinB()">⌫</button>
+    <button class="pin-btn" onclick="pinP('0')">0</button>
+    <button class="pin-btn" style="background:#e5e7eb"></button>
+    <button class="pin-btn entrar" onclick="pinEntrar()">✅ Entrar</button>
   </div>
+  <div id="pin-error"></div>
+</div>
 
-  <!-- APP PRINCIPAL -->
-  <header>
-    <img src="logo_familia.png" class="header-logo" alt="Farmacia Lily">
-    <h1>FarmaStock Lily</h1>
-    <p>Sistema de inventario inteligente</p>
-  </header>
+<!-- ════════ APP ════════ -->
+<header>
+  <img src="logo_familia.png" class="header-logo" alt="Farmacia Lily">
+  <h1>FarmaStock Lily</h1>
+  <div class="usuario-badge" id="usuario-badge">👤 Cargando...</div>
+</header>
 
-  <div class="tabs">
-    <button class="tab active" onclick="cambiarTab('inventario')">
-      <img src="rojo_inicio.png" alt="">Inicio
-    </button>
-    <button class="tab" onclick="cambiarTab('agregar')">
-      <img src="galan.png" alt="">Agregar
-    </button>
-    <button class="tab" onclick="cambiarTab('ventas')">
-      <img src="urgente.png" alt="">Ventas
-    </button>
-    <button class="tab" onclick="cambiarTab('reporte')">
-      <img src="rojo_reporte.png" alt="">Reporte
-    </button>
+<div class="tabs">
+  <button class="tab active" onclick="cambiarTab('inventario')">
+    <img src="rojo_inicio.png" alt="">Inicio
+  </button>
+  <button class="tab" onclick="cambiarTab('agregar')">
+    <img src="galan.png" alt="">Agregar
+  </button>
+  <button class="tab" onclick="cambiarTab('ventas')">
+    <img src="urgente.png" alt="">Ventas
+  </button>
+  <button class="tab" onclick="cambiarTab('reporte')">
+    <img src="rojo_reporte.png" alt="">Reporte
+  </button>
+</div>
+
+<!-- ════════ INVENTARIO ════════ -->
+<div class="panel active" id="panel-inventario">
+  <div class="alerta-banner" id="alerta-banner">
+    <img src="alerta.png" alt="">
+    <span id="alerta-texto"></span>
   </div>
-
-  <!-- INVENTARIO -->
-  <div class="panel active" id="panel-inventario">
-    <div class="alerta-banner" id="alerta-banner">
-      <img src="alerta.png" alt="alerta">
-      <span id="alerta-texto"></span>
-    </div>
-    <div class="card">
-      <h2><img src="rojo_inicio.png" alt="">Inventario actual</h2>
-      <div id="lista-inventario">Cargando...</div>
-    </div>
+  <div class="card">
+    <h2><img src="rojo_inicio.png" alt="">Inventario actual</h2>
+    <div id="lista-inventario">Cargando...</div>
   </div>
+</div>
 
-  <!-- AGREGAR -->
-  <div class="panel" id="panel-agregar">
-    <div class="card">
-      <h2><img src="galan.png" alt="">Agregar producto</h2>
-      <div class="form-grid">
-        <div class="form-group full"><label>Nombre</label><input type="text" id="nombre" placeholder="Ej: Paracetamol 500mg"></div>
-        <div class="form-group"><label>Marca</label><input type="text" id="marca" placeholder="Ej: Tempra"></div>
-        <div class="form-group"><label>Caducidad</label><input type="date" id="fecha_caducidad"></div>
-        <div class="form-group"><label>Precio venta</label><input type="number" id="precio_venta" placeholder="0.00"></div>
-        <div class="form-group"><label>Costo</label><input type="number" id="costo" placeholder="0.00"></div>
-        <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
-        <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
-        <div class="form-group full">
-          <label>Unidad de venta</label>
-          <select id="unidad">
-            <option value="pieza">Pieza</option>
-            <option value="caja">Caja</option>
-            <option value="frasco">Frasco</option>
-            <option value="sobre">Sobre</option>
-            <option value="ampolleta">Ampolleta</option>
-          </select>
-        </div>
+<!-- ════════ AGREGAR ════════ -->
+<div class="panel" id="panel-agregar">
+  <div class="card">
+    <h2><img src="galan.png" alt="">Agregar producto</h2>
+    <div class="form-grid">
+      <div class="form-group full"><label>Nombre</label><input type="text" id="nombre" placeholder="Ej: Paracetamol 500mg"></div>
+      <div class="form-group"><label>Marca</label><input type="text" id="marca" placeholder="Ej: Tempra"></div>
+      <div class="form-group"><label>Caducidad</label><input type="date" id="fecha_caducidad"></div>
+      <div class="form-group"><label>Precio venta</label><input type="number" id="precio_venta" placeholder="0.00"></div>
+      <div class="form-group"><label>Costo</label><input type="number" id="costo" placeholder="0.00"></div>
+      <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
+      <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
+      <div class="form-group full">
+        <label>Unidad de venta</label>
+        <select id="unidad">
+          <option value="pieza">Pieza</option>
+          <option value="caja">Caja</option>
+          <option value="frasco">Frasco</option>
+          <option value="sobre">Sobre</option>
+          <option value="ampolleta">Ampolleta</option>
+        </select>
       </div>
-      <button class="btn btn-green" onclick="agregarProducto()">
-        <img src="ok.png" alt="">Guardar en inventario
-      </button>
-      <div class="mensaje" id="msg-agregar"></div>
+    </div>
+    <button class="btn btn-green" onclick="agregarProducto()">
+      <img src="ok.png" alt="">Guardar en inventario
+    </button>
+    <div class="mensaje" id="msg-agregar"></div>
+  </div>
+</div>
+
+<!-- ════════ VENTAS ════════ -->
+<div class="panel" id="panel-ventas">
+  <div class="card">
+    <h2>⚡ Venta rápida — Top 5</h2>
+    <div class="top5-grid" id="top5-grid">
+      <p style="color:#6b7280;font-size:12px;grid-column:span 2;text-align:center;padding:10px">Aún no hay ventas registradas</p>
     </div>
   </div>
+  <div class="card">
+    <h2><img src="urgente.png" alt="">Registrar venta</h2>
+    <label>Buscar producto</label>
+    <input type="text" class="buscador" id="buscador-ventas" placeholder="🔍 Escribe para buscar..." oninput="filtrarProductos()">
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Producto</label>
+      <select id="venta-producto"><option value="">Selecciona un producto...</option></select>
+    </div>
+    <div class="form-group">
+      <label>Cantidad</label>
+      <input type="number" id="venta-cantidad" placeholder="0" min="1">
+    </div>
+    <button class="btn btn-blue" onclick="registrarVenta()">
+      <img src="galan.png" alt="">Registrar venta
+    </button>
+    <div class="mensaje" id="msg-venta"></div>
+  </div>
+</div>
 
-  <!-- VENTAS -->
-  <div class="panel" id="panel-ventas">
-    <div class="card">
-      <h2><img src="urgente.png" alt="">Registrar venta</h2>
-      <label>Buscar producto</label>
-      <input type="text" class="buscador" id="buscador-ventas" placeholder="🔍 Escribe para buscar..." oninput="filtrarProductos()">
-      <div class="form-group" style="margin-bottom:12px">
-        <label>Producto vendido</label>
-        <select id="venta-producto"><option value="">Selecciona un producto...</option></select>
+<!-- ════════ REPORTE ════════ -->
+<div class="panel" id="panel-reporte">
+
+  <!-- CAJA DEL DÍA -->
+  <div class="card">
+    <h2>💵 Caja del día</h2>
+    <div id="caja-banner-wrap">Cargando...</div>
+    <div class="stat-grid" id="stats-dia-detalle" style="margin-top:10px"></div>
+
+    <!-- RETIRO DE CAJA -->
+    <div class="seccion-titulo">💸 Registrar retiro de caja</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Monto retirado</label>
+        <input type="number" id="retiro-monto" placeholder="0.00">
       </div>
       <div class="form-group">
-        <label>Cantidad vendida</label>
-        <input type="number" id="venta-cantidad" placeholder="0" min="1">
+        <label>¿Para qué?</label>
+        <input type="text" id="retiro-concepto" placeholder="Ej: Pago a proveedor">
       </div>
-      <button class="btn btn-blue" onclick="registrarVenta()">
-        <img src="galan.png" alt="">Registrar venta
-      </button>
-      <div class="mensaje" id="msg-venta"></div>
     </div>
+    <button class="btn btn-orange" onclick="registrarRetiro()" style="margin-top:10px">
+      💵 Registrar retiro
+    </button>
+    <div class="mensaje" id="msg-retiro"></div>
+    <div id="lista-retiros" style="margin-top:12px"></div>
   </div>
 
-  <!-- REPORTE -->
-  <div class="panel" id="panel-reporte">
-
-    <!-- RESUMEN ESTADÍSTICAS -->
-    <div class="card">
-      <h2>🦜 Resumen de hoy</h2>
-      <div id="stats-dia">Cargando...</div>
-    </div>
-
-    <div class="card">
-      <h2>📅 Esta semana</h2>
-      <div id="stats-semana">Cargando...</div>
-    </div>
-
-    <div class="card">
-      <h2>🗓️ Este mes</h2>
-      <div id="stats-mes">Cargando...</div>
-    </div>
-
-    <!-- GASTOS DEL DÍA -->
-    <div class="card">
-      <h2>💸 Registrar gasto del día</h2>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>¿Cuánto gasté?</label>
-          <input type="number" id="gasto-monto" placeholder="0.00">
-        </div>
-        <div class="form-group">
-          <label>¿Para qué?</label>
-          <input type="text" id="gasto-concepto" placeholder="Ej: Surtido de caja">
-        </div>
-      </div>
-      <button class="btn btn-red" onclick="registrarGasto()">
-        💸 Registrar gasto
-      </button>
-      <div class="mensaje" id="msg-gasto"></div>
-      <div id="lista-gastos" style="margin-top:14px"></div>
-    </div>
-
-    <!-- INVENTARIO BAJO / LISTA DEL LUNES -->
-    <div class="card">
-      <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
-      <div id="lista-reporte">Cargando...</div>
-    </div>
-
-    <!-- VENTAS DEL DÍA DETALLE -->
-    <div class="card">
-      <h2><img src="rojo_reporte.png" alt="">Ventas de hoy (detalle)</h2>
-      <div id="resumen-dia">Cargando...</div>
-    </div>
-
+  <!-- ESTADÍSTICAS SEMANA / MES -->
+  <div class="card">
+    <h2>📅 Esta semana</h2>
+    <div id="stats-semana">Cargando...</div>
+  </div>
+  <div class="card">
+    <h2>🗓️ Este mes</h2>
+    <div id="stats-mes">Cargando...</div>
   </div>
 
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
+  <!-- GASTOS -->
+  <div class="card">
+    <h2>💸 Gastos del día</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>¿Cuánto gasté?</label>
+        <input type="number" id="gasto-monto" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>¿Para qué?</label>
+        <input type="text" id="gasto-concepto" placeholder="Ej: Surtido">
+      </div>
+    </div>
+    <button class="btn btn-red" onclick="registrarGasto()">💸 Registrar gasto</button>
+    <div class="mensaje" id="msg-gasto"></div>
+    <div id="lista-gastos" style="margin-top:12px"></div>
+  </div>
 
-    // ─── LOGIN PIN ───────────────────────────────────────────────
-    let pinActual = ''
+  <!-- LISTA DEL LUNES -->
+  <div class="card">
+    <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
+    <div id="lista-reporte">Cargando...</div>
+  </div>
 
-    function pinPresionar(num) {
-      if (!num) return
-      if (pinActual.length >= 4) return
-      pinActual += num
-      actualizarPinDisplay()
+  <!-- VENTAS HOY DETALLE -->
+  <div class="card">
+    <h2><img src="rojo_reporte.png" alt="">Ventas de hoy (detalle)</h2>
+    <div id="resumen-dia">Cargando...</div>
+  </div>
+
+</div>
+
+<script>
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
+
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+let pinActual = '', usuarioNombre = ''
+
+function pinP(n) { if (pinActual.length < 4) { pinActual += n; actualizarPin() } }
+function pinB()  { pinActual = pinActual.slice(0,-1); actualizarPin() }
+function actualizarPin() {
+  let t = ''
+  for (let i=0;i<4;i++) { t += pinActual[i] ? '●' : '_'; if(i<3) t+=' ' }
+  document.getElementById('pin-display').textContent = t
+}
+async function pinEntrar() {
+  if (pinActual.length !== 4) { document.getElementById('pin-error').textContent = 'Ingresa 4 dígitos'; return }
+  try {
+    const r = await fetch('/verificar-pin', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin:pinActual}) })
+    const d = await r.json()
+    if (d.ok) {
+      usuarioNombre = d.nombre
+      document.getElementById('pantalla-login').style.display = 'none'
+      document.getElementById('usuario-badge').textContent = '👤 ' + usuarioNombre
+    } else {
+      document.getElementById('pin-error').textContent = '❌ PIN incorrecto'
+      pinActual = ''; actualizarPin()
     }
+  } catch(e) { document.getElementById('pin-error').textContent = 'Error de conexión' }
+}
 
-    function pinBorrar() {
-      pinActual = pinActual.slice(0, -1)
-      actualizarPinDisplay()
-    }
+// ─── APP ──────────────────────────────────────────────────────────────────────
+let productos = [], productosFiltrados = []
+cargarInventario()
 
-    function actualizarPinDisplay() {
-      const d = document.getElementById('pin-display')
-      let texto = ''
-      for (let i = 0; i < 4; i++) {
-        texto += pinActual[i] ? '●' : '_'
-        if (i < 3) texto += ' '
-      }
-      d.textContent = texto
-    }
+function cambiarTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['inventario','agregar','ventas','reporte'][i] === tab)
+  })
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  document.getElementById('panel-'+tab).classList.add('active')
+  if (tab==='ventas')  { llenarSelectProductos(); cargarTop5(); productosFiltrados=[...productos] }
+  if (tab==='reporte') { cargarReporte(); cargarVentasHoy(); cargarEstadisticas(); cargarGastosHoy(); cargarRetirosHoy() }
+}
 
-    async function pinEntrar() {
-      if (pinActual.length !== 4) {
-        document.getElementById('pin-error').textContent = 'Ingresa 4 dígitos'
-        return
-      }
-      try {
-        const res = await fetch('/verificar-pin', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pin: pinActual })
-        })
-        const data = await res.json()
-        if (data.ok) {
-          document.getElementById('pantalla-login').style.display = 'none'
-        } else {
-          document.getElementById('pin-error').textContent = '❌ PIN incorrecto, intenta de nuevo'
-          pinActual = ''
-          actualizarPinDisplay()
-        }
-      } catch(e) {
-        document.getElementById('pin-error').textContent = 'Error de conexión'
-      }
-    }
+async function cargarInventario() {
+  try {
+    const r = await fetch('/inventario')
+    productos = await r.json()
+    productosFiltrados = [...productos]
+    const lista = document.getElementById('lista-inventario')
+    const banner = document.getElementById('alerta-banner')
+    const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
+    if (bajos.length > 0) {
+      banner.style.display = 'flex'
+      document.getElementById('alerta-texto').textContent = bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p=>p.nombre).join(', ')
+    } else { banner.style.display = 'none' }
+    if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'; return }
+    lista.innerHTML = productos.map(p => {
+      const c = p.stock_actual<=p.stock_minimo ? 'stock-danger' : p.stock_actual<=p.stock_minimo*2 ? 'stock-warn' : 'stock-ok'
+      return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · ${p.unidad||'pieza'} · Cad: ${p.fecha_caducidad}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
+    }).join('')
+  } catch(e) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
+}
 
-    // ─── APP ──────────────────────────────────────────────────────
-    let productos = []
-    let productosFiltrados = []
+function llenarSelectProductos() {
+  const sel = document.getElementById('venta-producto')
+  const lista = productosFiltrados.length ? productosFiltrados : productos
+  sel.innerHTML = '<option value="">Selecciona un producto...</option>'
+  lista.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} ${p.unidad||'pza'}</option>` })
+}
+
+function filtrarProductos() {
+  const q = document.getElementById('buscador-ventas').value.toLowerCase()
+  productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(q) || (p.marca||'').toLowerCase().includes(q))
+  llenarSelectProductos()
+}
+
+async function cargarTop5() {
+  try {
+    const top = await fetch('/top-productos').then(r=>r.json())
+    const grid = document.getElementById('top5-grid')
+    if (!top.length) { grid.innerHTML = '<p style="color:#6b7280;font-size:12px;grid-column:span 2;text-align:center;padding:10px">Registra ventas para ver el Top 5</p>'; return }
+    grid.innerHTML = top.map(p => `
+      <button class="top5-btn" onclick="ventaRapida('${p.id}','${p.nombre.replace(/'/g,"\\'")}',${p.precio_venta})">
+        <div class="top5-nombre">${p.nombre}</div>
+        <div class="top5-precio">$${p.precio_venta.toFixed(2)}</div>
+        <div class="top5-stock">Stock: ${p.stock_actual} ${p.unidad}</div>
+      </button>
+    `).join('')
+  } catch(e) {}
+}
+
+async function ventaRapida(id, nombre, precio) {
+  if (!confirm(`¿Vender 1 ${nombre} — $${precio.toFixed(2)}?`)) return
+  try {
+    const r = await fetch('/venta', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ producto_id:id, cantidad:1, usuario:usuarioNombre }) })
+    const d = await r.json()
+    mostrarMensaje('msg-venta', d.alerta || `✅ ${nombre} vendido`, d.alerta ? 'warn' : 'ok')
+    cargarInventario(); cargarTop5(); llenarSelectProductos()
+  } catch(e) { mostrarMensaje('msg-venta', 'Error', 'error') }
+}
+
+async function agregarProducto() {
+  const p = {
+    nombre: document.getElementById('nombre').value,
+    marca: document.getElementById('marca').value,
+    precio_venta: parseFloat(document.getElementById('precio_venta').value),
+    costo: parseFloat(document.getElementById('costo').value),
+    stock_actual: parseInt(document.getElementById('stock_actual').value),
+    stock_minimo: parseInt(document.getElementById('stock_minimo').value),
+    unidad: document.getElementById('unidad').value,
+    fecha_caducidad: document.getElementById('fecha_caducidad').value,
+    usuario: usuarioNombre
+  }
+  if (!p.nombre||!p.marca) { mostrarMensaje('msg-agregar','Llena nombre y marca','error'); return }
+  try {
+    await fetch('/producto', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p) })
+    mostrarMensaje('msg-agregar','¡Producto guardado!','ok','ok.png')
+    ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value='')
+    document.getElementById('unidad').value='pieza'
     cargarInventario()
+  } catch(e) { mostrarMensaje('msg-agregar','Error al guardar','error') }
+}
 
-    function cambiarTab(tab) {
-      document.querySelectorAll('.tab').forEach((t,i) => {
-        t.classList.toggle('active', ['inventario','agregar','ventas','reporte'][i] === tab)
-      })
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
-      document.getElementById('panel-' + tab).classList.add('active')
-      if (tab === 'ventas') { llenarSelectProductos(); productosFiltrados = [...productos] }
-      if (tab === 'reporte') { cargarReporte(); cargarVentasHoy(); cargarEstadisticas(); cargarGastosHoy() }
+async function registrarVenta() {
+  const producto_id = document.getElementById('venta-producto').value
+  const cantidad = parseInt(document.getElementById('venta-cantidad').value)
+  if (!producto_id||!cantidad) { mostrarMensaje('msg-venta','Selecciona producto y cantidad','error'); return }
+  try {
+    const r = await fetch('/venta', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ producto_id, cantidad, usuario:usuarioNombre }) })
+    const d = await r.json()
+    mostrarMensaje('msg-venta', d.alerta||'¡Venta registrada! Stock: '+d.stock_nuevo, d.alerta?'warn':'ok', d.alerta?'alerta.png':'galan.png')
+    document.getElementById('venta-cantidad').value=''
+    document.getElementById('buscador-ventas').value=''
+    productosFiltrados=[...productos]
+    cargarInventario(); cargarTop5(); llenarSelectProductos()
+  } catch(e) { mostrarMensaje('msg-venta','Error al registrar','error') }
+}
+
+// ─── CAJA ─────────────────────────────────────────────────────────────────────
+async function cargarVentasHoy() {
+  try {
+    const [vData, gData, rData] = await Promise.all([
+      fetch('/ventas-hoy').then(r=>r.json()),
+      fetch('/gastos-hoy').then(r=>r.json()),
+      fetch('/retiros-hoy').then(r=>r.json())
+    ])
+    // Caja = ventas del día - gastos - retiros
+    const caja = (vData.total_dia||0) - (gData.total_gastos||0) - (rData.total_retiros||0)
+    document.getElementById('caja-banner-wrap').innerHTML = `
+      <div class="caja-banner">
+        <div><div class="caja-label">💵 En caja ahora</div></div>
+        <div class="caja-monto">$${caja.toFixed(2)}</div>
+      </div>
+    `
+    document.getElementById('stats-dia-detalle').innerHTML = `
+      <div class="stat-box stat-ventas"><div class="stat-label">Ventas</div><div class="stat-valor">$${(vData.total_dia||0).toFixed(2)}</div></div>
+      <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia bruta</div><div class="stat-valor">$${(vData.ganancia_dia||0).toFixed(2)}</div></div>
+      <div class="stat-box stat-gastos"><div class="stat-label">Gastos</div><div class="stat-valor">$${(gData.total_gastos||0).toFixed(2)}</div></div>
+      <div class="stat-box stat-caja"><div class="stat-label">Retiros</div><div class="stat-valor">$${(rData.total_retiros||0).toFixed(2)}</div></div>
+    `
+    const div = document.getElementById('resumen-dia')
+    if (!vData.ventas.length) { div.innerHTML = '<p style="color:#6b7280;text-align:center;padding:16px">No hay ventas hoy</p>'; return }
+    div.innerHTML = vData.ventas.map(v => `
+      <div class="venta-item">
+        <div><div class="producto-nombre">${v.nombre}</div>
+        <div class="producto-meta">${v.marca} · ${v.cantidad} ${v.unidad||'pza'} · ${v.registrado_por||''}</div></div>
+        <span class="stock-badge stock-ok">$${(v.total||0).toFixed(2)}</span>
+      </div>`).join('')
+  } catch(e) { document.getElementById('caja-banner-wrap').innerHTML = 'Error cargando' }
+}
+
+async function registrarRetiro() {
+  const monto = document.getElementById('retiro-monto').value
+  const concepto = document.getElementById('retiro-concepto').value
+  if (!monto||!concepto) { mostrarMensaje('msg-retiro','Llena monto y concepto','error'); return }
+  try {
+    await fetch('/retiro', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monto,concepto,usuario:usuarioNombre}) })
+    mostrarMensaje('msg-retiro','¡Retiro registrado!','ok')
+    document.getElementById('retiro-monto').value=''
+    document.getElementById('retiro-concepto').value=''
+    cargarRetirosHoy(); cargarVentasHoy()
+  } catch(e) { mostrarMensaje('msg-retiro','Error','error') }
+}
+
+async function cargarRetirosHoy() {
+  try {
+    const d = await fetch('/retiros-hoy').then(r=>r.json())
+    const div = document.getElementById('lista-retiros')
+    if (!d.retiros.length) { div.innerHTML=''; return }
+    div.innerHTML = `<div style="font-size:12px;font-weight:800;color:#d97706;margin-bottom:8px">Retiros hoy — Total: $${d.total_retiros.toFixed(2)}</div>`
+      + d.retiros.map(r=>`<div class="retiro-item"><div class="producto-nombre">${r.concepto}</div><span class="stock-badge stock-warn">-$${(r.monto||0).toFixed(2)}</span></div>`).join('')
+  } catch(e) {}
+}
+
+async function registrarGasto() {
+  const monto = document.getElementById('gasto-monto').value
+  const concepto = document.getElementById('gasto-concepto').value
+  if (!monto||!concepto) { mostrarMensaje('msg-gasto','Llena monto y concepto','error'); return }
+  try {
+    await fetch('/gasto', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monto,concepto,usuario:usuarioNombre}) })
+    mostrarMensaje('msg-gasto','¡Gasto registrado!','ok')
+    document.getElementById('gasto-monto').value=''
+    document.getElementById('gasto-concepto').value=''
+    cargarGastosHoy(); cargarVentasHoy()
+  } catch(e) { mostrarMensaje('msg-gasto','Error','error') }
+}
+
+async function cargarGastosHoy() {
+  try {
+    const d = await fetch('/gastos-hoy').then(r=>r.json())
+    const div = document.getElementById('lista-gastos')
+    if (!d.gastos.length) { div.innerHTML=''; return }
+    div.innerHTML = `<div style="font-size:12px;font-weight:800;color:#991b1b;margin-bottom:8px">Gastos hoy — Total: $${d.total_gastos.toFixed(2)}</div>`
+      + d.gastos.map(g=>`<div class="gasto-item"><div><div class="producto-nombre">${g.concepto}</div><div class="producto-meta">${g.registrado_por||''}</div></div><span class="stock-badge stock-danger">-$${(g.monto||0).toFixed(2)}</span></div>`).join('')
+  } catch(e) {}
+}
+
+async function cargarEstadisticas() {
+  try {
+    const [sem, mes] = await Promise.all([
+      fetch('/ventas-semana').then(r=>r.json()),
+      fetch('/ventas-mes').then(r=>r.json())
+    ])
+    document.getElementById('stats-semana').innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-box stat-ventas"><div class="stat-label">Vendido</div><div class="stat-valor">$${sem.total_semana.toFixed(2)}</div></div>
+        <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia</div><div class="stat-valor">$${sem.ganancia_semana.toFixed(2)}</div></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;text-align:center">${sem.total_productos} piezas vendidas esta semana</p>`
+    document.getElementById('stats-mes').innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-box stat-ventas"><div class="stat-label">Vendido</div><div class="stat-valor">$${mes.total_mes.toFixed(2)}</div></div>
+        <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia</div><div class="stat-valor">$${mes.ganancia_mes.toFixed(2)}</div></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;text-align:center">${mes.total_productos} piezas vendidas este mes</p>`
+  } catch(e) {}
+}
+
+async function cargarReporte() {
+  try {
+    const d = await fetch('/reporte').then(r=>r.json())
+    let html = ''
+    if (d.urgentes.length) {
+      html += '<div class="reporte-seccion reporte-urgente">🚨 Comprar HOY</div>'
+      html += d.urgentes.map(p=>`<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad||'pza'}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
     }
-
-    async function cargarInventario() {
-      try {
-        const res = await fetch('/inventario')
-        productos = await res.json()
-        productosFiltrados = [...productos]
-        const lista = document.getElementById('lista-inventario')
-        const banner = document.getElementById('alerta-banner')
-        const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
-        if (bajos.length > 0) {
-          banner.style.display = 'flex'
-          document.getElementById('alerta-texto').textContent = bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p => p.nombre).join(', ')
-        } else { banner.style.display = 'none' }
-        if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'; return }
-        lista.innerHTML = productos.map(p => {
-          const c = p.stock_actual <= p.stock_minimo ? 'stock-danger' : p.stock_actual <= p.stock_minimo * 2 ? 'stock-warn' : 'stock-ok'
-          return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · ${p.unidad || 'pieza'} · Cad: ${p.fecha_caducidad}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
-        }).join('')
-      } catch(e) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
+    if (d.normales.length) {
+      html += '<div class="reporte-seccion reporte-normal">📦 Comprar pronto</div>'
+      html += d.normales.map(p=>`<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad||'pza'}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
     }
+    if (!html) html = '<p style="color:#6b7280;text-align:center;padding:16px">✅ Todo el inventario está bien</p>'
+    document.getElementById('lista-reporte').innerHTML = html
+  } catch(e) { document.getElementById('lista-reporte').innerHTML = 'Error' }
+}
 
-    function llenarSelectProductos() {
-      const sel = document.getElementById('venta-producto')
-      const lista = productosFiltrados.length ? productosFiltrados : productos
-      sel.innerHTML = '<option value="">Selecciona un producto...</option>'
-      lista.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} ${p.unidad || 'pza'}</option>` })
-    }
-
-    function filtrarProductos() {
-      const q = document.getElementById('buscador-ventas').value.toLowerCase()
-      productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(q) || p.marca.toLowerCase().includes(q))
-      llenarSelectProductos()
-    }
-
-    async function agregarProducto() {
-      const producto = {
-        nombre: document.getElementById('nombre').value,
-        marca: document.getElementById('marca').value,
-        precio_venta: parseFloat(document.getElementById('precio_venta').value),
-        costo: parseFloat(document.getElementById('costo').value),
-        stock_actual: parseInt(document.getElementById('stock_actual').value),
-        stock_minimo: parseInt(document.getElementById('stock_minimo').value),
-        unidad: document.getElementById('unidad').value,
-        fecha_caducidad: document.getElementById('fecha_caducidad').value
-      }
-      if (!producto.nombre || !producto.marca) { mostrarMensaje('msg-agregar', 'Llena nombre y marca', 'error'); return }
-      try {
-        await fetch('/producto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(producto) })
-        mostrarMensaje('msg-agregar', '¡Producto guardado!', 'ok', 'ok.png')
-        ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value = '')
-        document.getElementById('unidad').value = 'pieza'
-        cargarInventario()
-      } catch(e) { mostrarMensaje('msg-agregar', 'Error al guardar', 'error') }
-    }
-
-    async function registrarVenta() {
-      const producto_id = document.getElementById('venta-producto').value
-      const cantidad = parseInt(document.getElementById('venta-cantidad').value)
-      if (!producto_id || !cantidad) { mostrarMensaje('msg-venta', 'Selecciona producto y cantidad', 'error'); return }
-      try {
-        const res = await fetch('/venta', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ producto_id, cantidad }) })
-        const data = await res.json()
-        if (data.alerta) {
-          mostrarMensaje('msg-venta', data.alerta, 'warn', 'alerta.png')
-        } else {
-          mostrarMensaje('msg-venta', '¡Venta registrada! Stock: ' + data.stock_nuevo, 'ok', 'galan.png')
-        }
-        document.getElementById('venta-cantidad').value = ''
-        document.getElementById('buscador-ventas').value = ''
-        productosFiltrados = [...productos]
-        cargarInventario()
-        llenarSelectProductos()
-      } catch(e) { mostrarMensaje('msg-venta', 'Error al registrar', 'error') }
-    }
-
-    async function cargarEstadisticas() {
-      try {
-        const [rSem, rMes] = await Promise.all([
-          fetch('/ventas-semana').then(r => r.json()),
-          fetch('/ventas-mes').then(r => r.json())
-        ])
-
-        document.getElementById('stats-semana').innerHTML = `
-          <div class="stat-grid">
-            <div class="stat-box stat-ventas">
-              <div class="stat-label">Vendido</div>
-              <div class="stat-valor">$${rSem.total_semana.toFixed(2)}</div>
-            </div>
-            <div class="stat-box stat-ganancia">
-              <div class="stat-label">Ganancia</div>
-              <div class="stat-valor">$${rSem.ganancia_semana.toFixed(2)}</div>
-            </div>
-          </div>
-          <p style="font-size:12px;color:#6b7280;text-align:center">${rSem.total_productos} productos vendidos esta semana</p>
-        `
-
-        document.getElementById('stats-mes').innerHTML = `
-          <div class="stat-grid">
-            <div class="stat-box stat-ventas">
-              <div class="stat-label">Vendido</div>
-              <div class="stat-valor">$${rMes.total_mes.toFixed(2)}</div>
-            </div>
-            <div class="stat-box stat-ganancia">
-              <div class="stat-label">Ganancia</div>
-              <div class="stat-valor">$${rMes.ganancia_mes.toFixed(2)}</div>
-            </div>
-          </div>
-          <p style="font-size:12px;color:#6b7280;text-align:center">${rMes.total_productos} productos vendidos este mes</p>
-        `
-      } catch(e) {
-        document.getElementById('stats-semana').innerHTML = 'Error cargando'
-        document.getElementById('stats-mes').innerHTML = 'Error cargando'
-      }
-    }
-
-    async function cargarVentasHoy() {
-      try {
-        const data = await fetch('/ventas-hoy').then(r => r.json())
-        const div = document.getElementById('resumen-dia')
-        const statsDiv = document.getElementById('stats-dia')
-
-        // Stats del día con gastos
-        const gastosData = await fetch('/gastos-hoy').then(r => r.json())
-        const neto = data.ganancia_dia - gastosData.total_gastos
-
-        statsDiv.innerHTML = `
-          <div class="stat-grid">
-            <div class="stat-box stat-ventas">
-              <div class="stat-label">Ventas</div>
-              <div class="stat-valor">$${(data.total_dia || 0).toFixed(2)}</div>
-            </div>
-            <div class="stat-box stat-ganancia">
-              <div class="stat-label">Ganancia bruta</div>
-              <div class="stat-valor">$${(data.ganancia_dia || 0).toFixed(2)}</div>
-            </div>
-            <div class="stat-box stat-gastos">
-              <div class="stat-label">Gastos</div>
-              <div class="stat-valor">$${(gastosData.total_gastos || 0).toFixed(2)}</div>
-            </div>
-            <div class="stat-box stat-neto">
-              <div class="stat-label">Neto del día</div>
-              <div class="stat-valor">${neto >= 0 ? '+' : ''}$${neto.toFixed(2)}</div>
-            </div>
-          </div>
-        `
-
-        if (data.ventas.length === 0) {
-          div.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay ventas registradas hoy</p>'
-          return
-        }
-        div.innerHTML = `
-          <div class="total-dia">
-            <span>💰 Total del día</span>
-            <span class="monto">$${data.total_dia.toFixed(2)}</span>
-          </div>
-          ${data.ventas.map(v => `
-            <div class="venta-item">
-              <div>
-                <div class="producto-nombre">${v.nombre}</div>
-                <div class="producto-meta">${v.marca} · ${v.cantidad} ${v.unidad || 'pza'}</div>
-              </div>
-              <span class="stock-badge stock-ok">$${(v.total || 0).toFixed(2)}</span>
-            </div>
-          `).join('')}
-        `
-      } catch(e) { document.getElementById('resumen-dia').innerHTML = 'Error cargando ventas' }
-    }
-
-    async function registrarGasto() {
-      const monto = document.getElementById('gasto-monto').value
-      const concepto = document.getElementById('gasto-concepto').value
-      if (!monto || !concepto) { mostrarMensaje('msg-gasto', 'Llena monto y concepto', 'error'); return }
-      try {
-        await fetch('/gasto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ monto, concepto }) })
-        mostrarMensaje('msg-gasto', '¡Gasto registrado!', 'ok')
-        document.getElementById('gasto-monto').value = ''
-        document.getElementById('gasto-concepto').value = ''
-        cargarGastosHoy()
-        cargarVentasHoy()
-      } catch(e) { mostrarMensaje('msg-gasto', 'Error al guardar', 'error') }
-    }
-
-    async function cargarGastosHoy() {
-      try {
-        const data = await fetch('/gastos-hoy').then(r => r.json())
-        const div = document.getElementById('lista-gastos')
-        if (data.gastos.length === 0) { div.innerHTML = ''; return }
-        div.innerHTML = `
-          <div style="font-size:12px;font-weight:800;color:#991b1b;margin-bottom:8px">Gastos registrados hoy — Total: $${data.total_gastos.toFixed(2)}</div>
-          ${data.gastos.map(g => `
-            <div class="gasto-item">
-              <div class="producto-nombre">${g.concepto}</div>
-              <span class="stock-badge stock-danger">-$${(g.monto || 0).toFixed(2)}</span>
-            </div>
-          `).join('')}
-        `
-      } catch(e) {}
-    }
-
-    async function cargarReporte() {
-      try {
-        const res = await fetch('/reporte')
-        const data = await res.json()
-        let html = ''
-        if (data.urgentes.length > 0) {
-          html += '<div class="reporte-seccion reporte-urgente">🚨 Comprar HOY</div>'
-          html += data.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
-        }
-        if (data.normales.length > 0) {
-          html += '<div class="reporte-seccion reporte-normal">📦 Comprar el lunes</div>'
-          html += data.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
-        }
-        if (html === '') html = '<p style="color:#6b7280;text-align:center;padding:20px">✅ Todo el inventario está bien</p>'
-        document.getElementById('lista-reporte').innerHTML = html
-      } catch(e) { document.getElementById('lista-reporte').innerHTML = 'Error cargando reporte' }
-    }
-
-    function mostrarMensaje(id, texto, tipo, img) {
-      const m = document.getElementById(id)
-      m.innerHTML = img ? `<img src="${img}" alt="">${texto}` : texto
-      m.className = 'mensaje ' + tipo
-      setTimeout(() => m.className = 'mensaje', 5000)
-    }
-  </script>
+function mostrarMensaje(id, texto, tipo, img) {
+  const m = document.getElementById(id)
+  m.innerHTML = img ? `<img src="${img}" alt="">${texto}` : texto
+  m.className = 'mensaje ' + tipo
+  setTimeout(() => m.className = 'mensaje', 5000)
+}
+</script>
 </body>
 </html>
