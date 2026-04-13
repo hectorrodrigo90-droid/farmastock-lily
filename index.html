@@ -9,6 +9,35 @@
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Nunito', sans-serif; background: #e8f5f0; min-height: 100vh; }
+
+    /* LOGIN */
+    #pantalla-login {
+      position: fixed; inset: 0; background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 999; padding: 30px;
+    }
+    #pantalla-login img { width: 140px; margin-bottom: 16px; filter: drop-shadow(0 4px 12px #0005); }
+    #pantalla-login h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    #pantalla-login p { color: #b2ffe0; font-size: 13px; margin-bottom: 28px; }
+    .pin-display {
+      background: #ffffff22; border-radius: 16px; padding: 14px 30px;
+      font-size: 36px; letter-spacing: 12px; color: white; font-weight: 800;
+      margin-bottom: 24px; min-width: 180px; text-align: center; min-height: 64px;
+    }
+    .pin-teclado {
+      display: grid; grid-template-columns: repeat(3, 72px); gap: 10px;
+    }
+    .pin-btn {
+      height: 64px; border: none; border-radius: 16px;
+      background: white; color: #1a7a5e; font-size: 22px; font-weight: 800;
+      cursor: pointer; transition: transform .1s, opacity .2s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .pin-btn:active { transform: scale(.93); opacity: .8; }
+    .pin-btn.borrar { background: #fee2e2; color: #991b1b; }
+    .pin-btn.entrar { background: #dcfce7; color: #166534; grid-column: span 3; height: 52px; font-size: 16px; }
+    #pin-error { color: #fca5a5; font-size: 13px; font-weight: 700; margin-top: 14px; min-height: 20px; }
+
     header {
       background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
       padding: 24px 20px 20px; text-align: center;
@@ -61,6 +90,8 @@
     .btn img { width: 24px; height: 24px; object-fit: contain; }
     .btn-green { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
     .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+    .btn-red { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
+    .btn-orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
     .mensaje {
       text-align: center; padding: 12px; border-radius: 12px;
       font-size: 13px; font-weight: 700; margin-top: 12px;
@@ -97,16 +128,57 @@
       margin-bottom: 8px; display: flex; justify-content: space-between;
       align-items: center; background: #f0f9ff;
     }
+    .gasto-item {
+      padding: 10px 14px; border: 2px solid #fee2e2; border-radius: 12px;
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+      align-items: center; background: #fff5f5;
+    }
     .total-dia {
       background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
       color: white; border-radius: 16px; padding: 16px 20px;
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 14px; font-weight: 800;
+      margin-bottom: 10px; font-weight: 800;
     }
     .total-dia .monto { font-size: 24px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat-box {
+      border-radius: 16px; padding: 14px 12px; text-align: center;
+    }
+    .stat-box .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; opacity: .8; }
+    .stat-box .stat-valor { font-size: 20px; font-weight: 800; }
+    .stat-ventas { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+    .stat-ganancia { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
+    .stat-gastos { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+    .stat-neto { background: linear-gradient(135deg, #fef9c3, #fde68a); color: #854d0e; }
   </style>
 </head>
 <body>
+
+  <!-- PANTALLA LOGIN -->
+  <div id="pantalla-login">
+    <img src="logo_familia.png" alt="Farmacia Lily">
+    <h2>FarmaStock Lily 🦜</h2>
+    <p>Ingresa tu PIN de 4 dígitos</p>
+    <div class="pin-display" id="pin-display">_ _ _ _</div>
+    <div class="pin-teclado">
+      <button class="pin-btn" onclick="pinPresionar('1')">1</button>
+      <button class="pin-btn" onclick="pinPresionar('2')">2</button>
+      <button class="pin-btn" onclick="pinPresionar('3')">3</button>
+      <button class="pin-btn" onclick="pinPresionar('4')">4</button>
+      <button class="pin-btn" onclick="pinPresionar('5')">5</button>
+      <button class="pin-btn" onclick="pinPresionar('6')">6</button>
+      <button class="pin-btn" onclick="pinPresionar('7')">7</button>
+      <button class="pin-btn" onclick="pinPresionar('8')">8</button>
+      <button class="pin-btn" onclick="pinPresionar('9')">9</button>
+      <button class="pin-btn borrar" onclick="pinBorrar()">⌫</button>
+      <button class="pin-btn" onclick="pinPresionar('0')">0</button>
+      <button class="pin-btn" onclick="pinPresionar('')" style="background:#e5e7eb"></button>
+      <button class="pin-btn entrar" onclick="pinEntrar()">✅ Entrar</button>
+    </div>
+    <div id="pin-error"></div>
+  </div>
+
+  <!-- APP PRINCIPAL -->
   <header>
     <img src="logo_familia.png" class="header-logo" alt="Farmacia Lily">
     <h1>FarmaStock Lily</h1>
@@ -193,18 +265,110 @@
 
   <!-- REPORTE -->
   <div class="panel" id="panel-reporte">
+
+    <!-- RESUMEN ESTADÍSTICAS -->
     <div class="card">
-      <h2><img src="rojo_reporte.png" alt="">Ventas de hoy</h2>
-      <div id="resumen-dia">Cargando...</div>
+      <h2>🦜 Resumen de hoy</h2>
+      <div id="stats-dia">Cargando...</div>
     </div>
+
+    <div class="card">
+      <h2>📅 Esta semana</h2>
+      <div id="stats-semana">Cargando...</div>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ Este mes</h2>
+      <div id="stats-mes">Cargando...</div>
+    </div>
+
+    <!-- GASTOS DEL DÍA -->
+    <div class="card">
+      <h2>💸 Registrar gasto del día</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>¿Cuánto gasté?</label>
+          <input type="number" id="gasto-monto" placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label>¿Para qué?</label>
+          <input type="text" id="gasto-concepto" placeholder="Ej: Surtido de caja">
+        </div>
+      </div>
+      <button class="btn btn-red" onclick="registrarGasto()">
+        💸 Registrar gasto
+      </button>
+      <div class="mensaje" id="msg-gasto"></div>
+      <div id="lista-gastos" style="margin-top:14px"></div>
+    </div>
+
+    <!-- INVENTARIO BAJO / LISTA DEL LUNES -->
     <div class="card">
       <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
       <div id="lista-reporte">Cargando...</div>
     </div>
+
+    <!-- VENTAS DEL DÍA DETALLE -->
+    <div class="card">
+      <h2><img src="rojo_reporte.png" alt="">Ventas de hoy (detalle)</h2>
+      <div id="resumen-dia">Cargando...</div>
+    </div>
+
   </div>
 
   <script>
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
+
+    // ─── LOGIN PIN ───────────────────────────────────────────────
+    let pinActual = ''
+
+    function pinPresionar(num) {
+      if (!num) return
+      if (pinActual.length >= 4) return
+      pinActual += num
+      actualizarPinDisplay()
+    }
+
+    function pinBorrar() {
+      pinActual = pinActual.slice(0, -1)
+      actualizarPinDisplay()
+    }
+
+    function actualizarPinDisplay() {
+      const d = document.getElementById('pin-display')
+      let texto = ''
+      for (let i = 0; i < 4; i++) {
+        texto += pinActual[i] ? '●' : '_'
+        if (i < 3) texto += ' '
+      }
+      d.textContent = texto
+    }
+
+    async function pinEntrar() {
+      if (pinActual.length !== 4) {
+        document.getElementById('pin-error').textContent = 'Ingresa 4 dígitos'
+        return
+      }
+      try {
+        const res = await fetch('/verificar-pin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pinActual })
+        })
+        const data = await res.json()
+        if (data.ok) {
+          document.getElementById('pantalla-login').style.display = 'none'
+        } else {
+          document.getElementById('pin-error').textContent = '❌ PIN incorrecto, intenta de nuevo'
+          pinActual = ''
+          actualizarPinDisplay()
+        }
+      } catch(e) {
+        document.getElementById('pin-error').textContent = 'Error de conexión'
+      }
+    }
+
+    // ─── APP ──────────────────────────────────────────────────────
     let productos = []
     let productosFiltrados = []
     cargarInventario()
@@ -216,7 +380,7 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
       document.getElementById('panel-' + tab).classList.add('active')
       if (tab === 'ventas') { llenarSelectProductos(); productosFiltrados = [...productos] }
-      if (tab === 'reporte') { cargarReporte(); cargarVentasHoy() }
+      if (tab === 'reporte') { cargarReporte(); cargarVentasHoy(); cargarEstadisticas(); cargarGastosHoy() }
     }
 
     async function cargarInventario() {
@@ -293,11 +457,77 @@
       } catch(e) { mostrarMensaje('msg-venta', 'Error al registrar', 'error') }
     }
 
+    async function cargarEstadisticas() {
+      try {
+        const [rSem, rMes] = await Promise.all([
+          fetch('/ventas-semana').then(r => r.json()),
+          fetch('/ventas-mes').then(r => r.json())
+        ])
+
+        document.getElementById('stats-semana').innerHTML = `
+          <div class="stat-grid">
+            <div class="stat-box stat-ventas">
+              <div class="stat-label">Vendido</div>
+              <div class="stat-valor">$${rSem.total_semana.toFixed(2)}</div>
+            </div>
+            <div class="stat-box stat-ganancia">
+              <div class="stat-label">Ganancia</div>
+              <div class="stat-valor">$${rSem.ganancia_semana.toFixed(2)}</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#6b7280;text-align:center">${rSem.total_productos} productos vendidos esta semana</p>
+        `
+
+        document.getElementById('stats-mes').innerHTML = `
+          <div class="stat-grid">
+            <div class="stat-box stat-ventas">
+              <div class="stat-label">Vendido</div>
+              <div class="stat-valor">$${rMes.total_mes.toFixed(2)}</div>
+            </div>
+            <div class="stat-box stat-ganancia">
+              <div class="stat-label">Ganancia</div>
+              <div class="stat-valor">$${rMes.ganancia_mes.toFixed(2)}</div>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#6b7280;text-align:center">${rMes.total_productos} productos vendidos este mes</p>
+        `
+      } catch(e) {
+        document.getElementById('stats-semana').innerHTML = 'Error cargando'
+        document.getElementById('stats-mes').innerHTML = 'Error cargando'
+      }
+    }
+
     async function cargarVentasHoy() {
       try {
-        const res = await fetch('/ventas-hoy')
-        const data = await res.json()
+        const data = await fetch('/ventas-hoy').then(r => r.json())
         const div = document.getElementById('resumen-dia')
+        const statsDiv = document.getElementById('stats-dia')
+
+        // Stats del día con gastos
+        const gastosData = await fetch('/gastos-hoy').then(r => r.json())
+        const neto = data.ganancia_dia - gastosData.total_gastos
+
+        statsDiv.innerHTML = `
+          <div class="stat-grid">
+            <div class="stat-box stat-ventas">
+              <div class="stat-label">Ventas</div>
+              <div class="stat-valor">$${(data.total_dia || 0).toFixed(2)}</div>
+            </div>
+            <div class="stat-box stat-ganancia">
+              <div class="stat-label">Ganancia bruta</div>
+              <div class="stat-valor">$${(data.ganancia_dia || 0).toFixed(2)}</div>
+            </div>
+            <div class="stat-box stat-gastos">
+              <div class="stat-label">Gastos</div>
+              <div class="stat-valor">$${(gastosData.total_gastos || 0).toFixed(2)}</div>
+            </div>
+            <div class="stat-box stat-neto">
+              <div class="stat-label">Neto del día</div>
+              <div class="stat-valor">${neto >= 0 ? '+' : ''}$${neto.toFixed(2)}</div>
+            </div>
+          </div>
+        `
+
         if (data.ventas.length === 0) {
           div.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay ventas registradas hoy</p>'
           return
@@ -318,6 +548,37 @@
           `).join('')}
         `
       } catch(e) { document.getElementById('resumen-dia').innerHTML = 'Error cargando ventas' }
+    }
+
+    async function registrarGasto() {
+      const monto = document.getElementById('gasto-monto').value
+      const concepto = document.getElementById('gasto-concepto').value
+      if (!monto || !concepto) { mostrarMensaje('msg-gasto', 'Llena monto y concepto', 'error'); return }
+      try {
+        await fetch('/gasto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ monto, concepto }) })
+        mostrarMensaje('msg-gasto', '¡Gasto registrado!', 'ok')
+        document.getElementById('gasto-monto').value = ''
+        document.getElementById('gasto-concepto').value = ''
+        cargarGastosHoy()
+        cargarVentasHoy()
+      } catch(e) { mostrarMensaje('msg-gasto', 'Error al guardar', 'error') }
+    }
+
+    async function cargarGastosHoy() {
+      try {
+        const data = await fetch('/gastos-hoy').then(r => r.json())
+        const div = document.getElementById('lista-gastos')
+        if (data.gastos.length === 0) { div.innerHTML = ''; return }
+        div.innerHTML = `
+          <div style="font-size:12px;font-weight:800;color:#991b1b;margin-bottom:8px">Gastos registrados hoy — Total: $${data.total_gastos.toFixed(2)}</div>
+          ${data.gastos.map(g => `
+            <div class="gasto-item">
+              <div class="producto-nombre">${g.concepto}</div>
+              <span class="stock-badge stock-danger">-$${(g.monto || 0).toFixed(2)}</span>
+            </div>
+          `).join('')}
+        `
+      } catch(e) {}
     }
 
     async function cargarReporte() {
