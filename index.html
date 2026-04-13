@@ -1,210 +1,279 @@
-const express = require('express')
-const admin = require('firebase-admin')
+<script>
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
 
-const serviceAccount = process.env.FIREBASE_CREDENTIALS
-  ? JSON.parse(process.env.FIREBASE_CREDENTIALS)
-  : require('./serviceAccount.json')
+// ─── FUNCION PARA OBTENER LA FECHA DE MÉXICO ───
+function getInicioDia() {
+  const d = new Date();
+  d.setHours(0,0,0,0);
+  return d.toISOString();
+}
 
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) })
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+let pinActual = '', usuarioNombre = ''
 
-const db = admin.firestore()
-const app = express()
-const port = process.env.PORT || 3000
-
-app.use(express.json())
-app.use(express.static(__dirname))
-
-// ─── USUARIOS ──
-const USUARIOS = [
-  { pin: '1111', nombre: 'Mamá' },
-  { pin: '2222', nombre: 'Papá' },
-  { pin: '3333', nombre: 'Hija' },
-  { pin: '4444', nombre: 'Empleado' }
-]
-const PIN_ADMIN = '9999'
-
-app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
-
-app.post('/verificar-pin', (req, res) => {
+function pinP(n) { if (pinActual.length < 4) { pinActual += n; actualizarPin() } }
+function pinB()  { pinActual = pinActual.slice(0,-1); actualizarPin() }
+function actualizarPin() {
+  let t = ''
+  for (let i=0;i<4;i++) { t += pinActual[i] ? '●' : '_'; if(i<3) t+=' ' }
+  document.getElementById('pin-display').textContent = t
+}
+async function pinEntrar() {
+  if (pinActual.length !== 4) { document.getElementById('pin-error').textContent = 'Ingresa 4 dígitos'; return }
   try {
-    const pin = req.body.pin;
-    let usuario_encontrado = false;
-    let nombre_asignado = 'Usuario';
+    const r = await fetch('/verificar-pin', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin:pinActual}) })
+    const d = await r.json()
+    if (d.ok) {
+      usuarioNombre = d.nombre
+      document.getElementById('pantalla-login').style.display = 'none'
+      document.getElementById('usuario-badge').textContent = '👤 ' + usuarioNombre
+    } else {
+      document.getElementById('pin-error').textContent = '❌ PIN incorrecto'
+      pinActual = ''; actualizarPin()
+    }
+  } catch(e) { document.getElementById('pin-error').textContent = 'Error de conexión' }
+}
+
+// ─── APP ──────────────────────────────────────────────────────────────────────
+let productos = [], productosFiltrados = []
+cargarInventario()
+
+function cambiarTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['inventario','agregar','ventas','reporte'][i] === tab)
+  })
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+  document.getElementById('panel-'+tab).classList.add('active')
+  if (tab==='ventas')  { llenarSelectProductos(); cargarTop5(); productosFiltrados=[...productos] }
+  if (tab==='reporte') { cargarReporte(); cargarVentasHoy(); cargarEstadisticas(); cargarGastosHoy(); cargarRetirosHoy() }
+}
+
+async function cargarInventario() {
+  try {
+    const r = await fetch('/inventario')
+    productos = await r.json()
+    productosFiltrados = [...productos]
+    const lista = document.getElementById('lista-inventario')
+    const banner = document.getElementById('alerta-banner')
+    const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
+    if (bajos.length > 0) {
+      banner.style.display = 'flex'
+      document.getElementById('alerta-texto').textContent = bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p=>p.nombre).join(', ')
+    } else { banner.style.display = 'none' }
+    if (productos.length === 0) { lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'; return }
+    lista.innerHTML = productos.map(p => {
+      const c = p.stock_actual<=p.stock_minimo ? 'stock-danger' : p.stock_actual<=p.stock_minimo*2 ? 'stock-warn' : 'stock-ok'
+      return `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · ${p.unidad||'pieza'} · Cad: ${p.fecha_caducidad}</div></div><span class="stock-badge ${c}">${p.stock_actual} uds</span></div>`
+    }).join('')
+  } catch(e) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
+}
+
+function llenarSelectProductos() {
+  const sel = document.getElementById('venta-producto')
+  const lista = productosFiltrados.length ? productosFiltrados : productos
+  sel.innerHTML = '<option value="">Selecciona un producto...</option>'
+  lista.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} ${p.unidad||'pza'}</option>` })
+}
+
+function filtrarProductos() {
+  const q = document.getElementById('buscador-ventas').value.toLowerCase()
+  productosFiltrados = productos.filter(p => p.nombre.toLowerCase().includes(q) || (p.marca||'').toLowerCase().includes(q))
+  llenarSelectProductos()
+}
+
+async function cargarTop5() {
+  try {
+    const top = await fetch('/top-productos').then(r=>r.json())
+    const grid = document.getElementById('top5-grid')
+    if (!top.length) { grid.innerHTML = '<p style="color:#6b7280;font-size:12px;grid-column:span 2;text-align:center;padding:10px">Registra ventas para ver el Top 5</p>'; return }
+    grid.innerHTML = top.map(p => `
+      <button class="top5-btn" onclick="ventaRapida('${p.id}','${p.nombre.replace(/'/g,"\\'")}',${p.precio_venta})">
+        <div class="top5-nombre">${p.nombre}</div>
+        <div class="top5-precio">$${p.precio_venta.toFixed(2)}</div>
+        <div class="top5-stock">Stock: ${p.stock_actual} ${p.unidad}</div>
+      </button>
+    `).join('')
+  } catch(e) { console.error(e) }
+}
+
+async function ventaRapida(id, nombre, precio) {
+  if (!confirm(`¿Vender 1 ${nombre} — $${precio.toFixed(2)}?`)) return
+  try {
+    const r = await fetch('/venta', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ producto_id:id, cantidad:1, usuario:usuarioNombre }) })
+    const d = await r.json()
+    mostrarMensaje('msg-venta', d.alerta || `✅ ${nombre} vendido`, d.alerta ? 'warn' : 'ok')
+    cargarInventario(); cargarTop5(); llenarSelectProductos()
+  } catch(e) { mostrarMensaje('msg-venta', 'Error', 'error') }
+}
+
+async function agregarProducto() {
+  const p = {
+    nombre: document.getElementById('nombre').value,
+    marca: document.getElementById('marca').value,
+    precio_venta: parseFloat(document.getElementById('precio_venta').value),
+    costo: parseFloat(document.getElementById('costo').value),
+    stock_actual: parseInt(document.getElementById('stock_actual').value),
+    stock_minimo: parseInt(document.getElementById('stock_minimo').value),
+    unidad: document.getElementById('unidad').value,
+    fecha_caducidad: document.getElementById('fecha_caducidad').value,
+    usuario: usuarioNombre
+  }
+  if (!p.nombre||!p.marca) { mostrarMensaje('msg-agregar','Llena nombre y marca','error'); return }
+  try {
+    await fetch('/producto', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p) })
+    mostrarMensaje('msg-agregar','¡Producto guardado!','ok','ok.png')
+    ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value='')
+    document.getElementById('unidad').value='pieza'
+    cargarInventario()
+  } catch(e) { mostrarMensaje('msg-agregar','Error al guardar','error') }
+}
+
+async function registrarVenta() {
+  const producto_id = document.getElementById('venta-producto').value
+  const cantidad = parseInt(document.getElementById('venta-cantidad').value)
+  if (!producto_id||!cantidad) { mostrarMensaje('msg-venta','Selecciona producto y cantidad','error'); return }
+  try {
+    const r = await fetch('/venta', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ producto_id, cantidad, usuario:usuarioNombre }) })
+    const d = await r.json()
+    mostrarMensaje('msg-venta', d.alerta||'¡Venta registrada! Stock: '+d.stock_nuevo, d.alerta?'warn':'ok', d.alerta?'alerta.png':'galan.png')
+    document.getElementById('venta-cantidad').value=''
+    document.getElementById('buscador-ventas').value=''
+    productosFiltrados=[...productos]
+    cargarInventario(); cargarTop5(); llenarSelectProductos()
+  } catch(e) { mostrarMensaje('msg-venta','Error al registrar','error') }
+}
+
+// ─── CAJA ─────────────────────────────────────────────────────────────────────
+async function cargarVentasHoy() {
+  try {
+    const inicioStr = getInicioDia();
+    const [vData, gData, rData] = await Promise.all([
+      fetch('/ventas-hoy?inicio=' + inicioStr).then(r=>r.json()),
+      fetch('/gastos-hoy?inicio=' + inicioStr).then(r=>r.json()),
+      fetch('/retiros-hoy?inicio=' + inicioStr).then(r=>r.json())
+    ])
+    // Caja = ventas del día - gastos - retiros
+    const caja = (vData.total_dia||0) - (gData.total_gastos||0) - (rData.total_retiros||0)
     
-    // Búsqueda blindada: soporta si cambiaste la estructura del código
-    for (let i = 0; i < USUARIOS.length; i++) {
-      if (USUARIOS[i] === pin || USUARIOS[i].pin === pin) {
-        usuario_encontrado = true;
-        nombre_asignado = USUARIOS[i].nombre || 'Familia';
-        break;
-      }
+    // FORMATO DE FECHA VISIBLE
+    const fechaStr = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
+    
+    document.getElementById('caja-banner-wrap').innerHTML = `
+      <div class="caja-banner">
+        <div>
+          <div class="caja-label">💵 En caja ahora</div>
+          <div style="font-size:10px; opacity:0.8; margin-top:2px">${fechaStr}</div>
+        </div>
+        <div class="caja-monto">$${caja.toFixed(2)}</div>
+      </div>
+    `
+    document.getElementById('stats-dia-detalle').innerHTML = `
+      <div class="stat-box stat-ventas"><div class="stat-label">Ventas</div><div class="stat-valor">$${(vData.total_dia||0).toFixed(2)}</div></div>
+      <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia bruta</div><div class="stat-valor">$${(vData.ganancia_dia||0).toFixed(2)}</div></div>
+      <div class="stat-box stat-gastos"><div class="stat-label">Gastos</div><div class="stat-valor">$${(gData.total_gastos||0).toFixed(2)}</div></div>
+      <div class="stat-box stat-caja"><div class="stat-label">Retiros</div><div class="stat-valor">$${(rData.total_retiros||0).toFixed(2)}</div></div>
+    `
+    const div = document.getElementById('resumen-dia')
+    if (!vData.ventas.length) { div.innerHTML = '<p style="color:#6b7280;text-align:center;padding:16px">No hay ventas hoy</p>'; return }
+    div.innerHTML = vData.ventas.map(v => `
+      <div class="venta-item">
+        <div><div class="producto-nombre">${v.nombre}</div>
+        <div class="producto-meta">${v.marca} · ${v.cantidad} ${v.unidad||'pza'} · ${v.registrado_por||''}</div></div>
+        <span class="stock-badge stock-ok">$${(v.total||0).toFixed(2)}</span>
+      </div>`).join('')
+  } catch(e) { document.getElementById('caja-banner-wrap').innerHTML = 'Error cargando' }
+}
+
+async function registrarRetiro() {
+  const monto = document.getElementById('retiro-monto').value
+  const concepto = document.getElementById('retiro-concepto').value
+  if (!monto||!concepto) { mostrarMensaje('msg-retiro','Llena monto y concepto','error'); return }
+  try {
+    await fetch('/retiro', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monto,concepto,usuario:usuarioNombre}) })
+    mostrarMensaje('msg-retiro','¡Retiro registrado!','ok')
+    document.getElementById('retiro-monto').value=''
+    document.getElementById('retiro-concepto').value=''
+    cargarRetirosHoy(); cargarVentasHoy()
+  } catch(e) { mostrarMensaje('msg-retiro','Error','error') }
+}
+
+async function cargarRetirosHoy() {
+  try {
+    const d = await fetch('/retiros-hoy?inicio=' + getInicioDia()).then(r=>r.json())
+    const div = document.getElementById('lista-retiros')
+    if (!d.retiros.length) { div.innerHTML=''; return }
+    div.innerHTML = `<div style="font-size:12px;font-weight:800;color:#d97706;margin-bottom:8px">Retiros hoy — Total: $${d.total_retiros.toFixed(2)}</div>`
+      + d.retiros.map(r=>`<div class="retiro-item"><div class="producto-nombre">${r.concepto}</div><span class="stock-badge stock-warn">-$${(r.monto||0).toFixed(2)}</span></div>`).join('')
+  } catch(e) {}
+}
+
+async function registrarGasto() {
+  const monto = document.getElementById('gasto-monto').value
+  const concepto = document.getElementById('gasto-concepto').value
+  if (!monto||!concepto) { mostrarMensaje('msg-gasto','Llena monto y concepto','error'); return }
+  try {
+    await fetch('/gasto', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monto,concepto,usuario:usuarioNombre}) })
+    mostrarMensaje('msg-gasto','¡Gasto registrado!','ok')
+    document.getElementById('gasto-monto').value=''
+    document.getElementById('gasto-concepto').value=''
+    cargarGastosHoy(); cargarVentasHoy()
+  } catch(e) { mostrarMensaje('msg-gasto','Error','error') }
+}
+
+async function cargarGastosHoy() {
+  try {
+    const d = await fetch('/gastos-hoy?inicio=' + getInicioDia()).then(r=>r.json())
+    const div = document.getElementById('lista-gastos')
+    if (!d.gastos.length) { div.innerHTML=''; return }
+    div.innerHTML = `<div style="font-size:12px;font-weight:800;color:#991b1b;margin-bottom:8px">Gastos hoy — Total: $${d.total_gastos.toFixed(2)}</div>`
+      + d.gastos.map(g=>`<div class="gasto-item"><div><div class="producto-nombre">${g.concepto}</div><div class="producto-meta">${g.registrado_por||''}</div></div><span class="stock-badge stock-danger">-$${(g.monto||0).toFixed(2)}</span></div>`).join('')
+  } catch(e) {}
+}
+
+async function cargarEstadisticas() {
+  try {
+    const [sem, mes] = await Promise.all([
+      fetch('/ventas-semana').then(r=>r.json()),
+      fetch('/ventas-mes').then(r=>r.json())
+    ])
+    document.getElementById('stats-semana').innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-box stat-ventas"><div class="stat-label">Vendido</div><div class="stat-valor">$${sem.total_semana.toFixed(2)}</div></div>
+        <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia</div><div class="stat-valor">$${sem.ganancia_semana.toFixed(2)}</div></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;text-align:center">${sem.total_productos} piezas vendidas esta semana</p>`
+    document.getElementById('stats-mes').innerHTML = `
+      <div class="stat-grid">
+        <div class="stat-box stat-ventas"><div class="stat-label">Vendido</div><div class="stat-valor">$${mes.total_mes.toFixed(2)}</div></div>
+        <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia</div><div class="stat-valor">$${mes.ganancia_mes.toFixed(2)}</div></div>
+      </div>
+      <p style="font-size:12px;color:#6b7280;text-align:center">${mes.total_productos} piezas vendidas este mes</p>`
+  } catch(e) {}
+}
+
+async function cargarReporte() {
+  try {
+    const d = await fetch('/reporte').then(r=>r.json())
+    let html = ''
+    if (d.urgentes.length) {
+      html += '<div class="reporte-seccion reporte-urgente">🚨 Comprar HOY</div>'
+      html += d.urgentes.map(p=>`<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad||'pza'}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
     }
-    if (usuario_encontrado) res.json({ ok: true, nombre: nombre_asignado });
-    else res.json({ ok: false });
-  } catch(e) { res.json({ ok: false }) }
-})
-
-// INVENTARIO
-app.get('/inventario', async (req, res) => {
-  try {
-    const snap = await db.collection('inventario').get()
-    const p = []; snap.forEach(d => p.push({ id: d.id, ...d.data() })); res.json(p)
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.post('/producto', async (req, res) => {
-  try {
-    const p = { ...req.body, ultima_actualizacion: new Date(), agregado_por: req.body.usuario || '?' }
-    delete p.usuario
-    const ref = await db.collection('inventario').add(p)
-    res.json({ id: ref.id })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-// VENTAS
-app.post('/venta', async (req, res) => {
-  try {
-    const { producto_id, cantidad, usuario } = req.body
-    const ref = db.collection('inventario').doc(producto_id)
-    const doc = await ref.get()
-    if (!doc.exists) return res.status(404).json({ error: 'No encontrado' })
-    const d = doc.data()
-    const nuevo_stock = d.stock_actual - cantidad
-    await ref.update({
-      stock_actual: nuevo_stock,
-      ultima_actualizacion: new Date(),
-      ventas_count: (d.ventas_count || 0) + cantidad
-    })
-    await db.collection('ventas').add({
-      producto_id, nombre: d.nombre, marca: d.marca, unidad: d.unidad || 'pieza',
-      cantidad, precio_venta: d.precio_venta, costo: d.costo || 0,
-      total: d.precio_venta * cantidad,
-      ganancia: (d.precio_venta - (d.costo || 0)) * cantidad,
-      fecha: new Date(), registrado_por: usuario || '?'
-    })
-    const alerta = nuevo_stock <= d.stock_minimo ? '🚨 Stock bajo' : null
-    res.json({ stock_nuevo: nuevo_stock, alerta })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.get('/ventas-hoy', async (req, res) => {
-  try {
-    const hoy = req.query.inicio ? new Date(req.query.inicio) : new Date();
-    if (!req.query.inicio) hoy.setHours(0,0,0,0);
-    const snap = await db.collection('ventas').where('fecha','>=',hoy).get()
-    let ventas=[], total_dia=0, ganancia_dia=0
-    snap.forEach(d => { const v={id:d.id,...d.data()}; ventas.push(v); total_dia+=v.total||0; ganancia_dia+=v.ganancia||0 })
-    res.json({ ventas, total_dia, ganancia_dia })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.get('/ventas-semana', async (req, res) => {
-  try {
-    const hoy = new Date()
-    const ini = new Date(hoy); ini.setDate(hoy.getDate()-hoy.getDay()); ini.setHours(0,0,0,0)
-    const snap = await db.collection('ventas').where('fecha','>=',ini).get()
-    let total=0, ganancia=0, uds=0
-    snap.forEach(d => { const v=d.data(); total+=v.total||0; ganancia+=v.ganancia||0; uds+=v.cantidad||0 })
-    res.json({ total_semana: total, ganancia_semana: ganancia, total_productos: uds })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.get('/ventas-mes', async (req, res) => {
-  try {
-    const hoy = new Date()
-    const ini = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
-    const snap = await db.collection('ventas').where('fecha','>=',ini).get()
-    let total=0, ganancia=0, uds=0
-    snap.forEach(d => { const v=d.data(); total+=v.total||0; ganancia+=v.ganancia||0; uds+=v.cantidad||0 })
-    res.json({ total_mes: total, ganancia_mes: ganancia, total_productos: uds })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.get('/top-productos', async (req, res) => {
-  try {
-    const snap = await db.collection('inventario').get()
-    const top = []
-    snap.forEach(d => {
-      const p = d.data()
-      if ((p.ventas_count||0) > 0) top.push({ id:d.id, nombre:p.nombre, precio_venta:p.precio_venta, unidad:p.unidad||'pieza', stock_actual:p.stock_actual, ventas_count: p.ventas_count })
-    })
-    top.sort((a,b) => b.ventas_count - a.ventas_count)
-    res.json(top.slice(0,5))
-  } catch (e) { res.status(500).json({ error: e.message }) }
-})
-
-// GASTOS
-app.post('/gasto', async (req, res) => {
-  try {
-    const { monto, concepto, usuario } = req.body
-    if (!monto||!concepto) return res.status(400).json({ error:'Faltan datos' })
-    await db.collection('gastos').add({ monto:parseFloat(monto), concepto, fecha:new Date(), registrado_por:usuario||'?' })
-    res.json({ ok: true })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.get('/gastos-hoy', async (req, res) => {
-  try {
-    const hoy = req.query.inicio ? new Date(req.query.inicio) : new Date();
-    if (!req.query.inicio) hoy.setHours(0,0,0,0);
-    const snap = await db.collection('gastos').where('fecha','>=',hoy).get()
-    let gastos=[], total=0
-    snap.forEach(d => { const g={id:d.id,...d.data()}; gastos.push(g); total+=g.monto||0 })
-    res.json({ gastos, total_gastos: total })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-// RETIROS DE CAJA
-app.post('/retiro', async (req, res) => {
-  try {
-    const { monto, concepto, usuario } = req.body
-    if (!monto||!concepto) return res.status(400).json({ error:'Faltan datos' })
-    await db.collection('retiros').add({ monto:parseFloat(monto), concepto, fecha:new Date(), registrado_por:usuario||'?' })
-    res.json({ ok: true })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-app.get('/retiros-hoy', async (req, res) => {
-  try {
-    const hoy = req.query.inicio ? new Date(req.query.inicio) : new Date();
-    if (!req.query.inicio) hoy.setHours(0,0,0,0);
-    const snap = await db.collection('retiros').where('fecha','>=',hoy).get()
-    let retiros=[], total=0
-    snap.forEach(d => { const r={id:d.id,...d.data()}; retiros.push(r); total+=r.monto||0 })
-    res.json({ retiros, total_retiros: total })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-// REPORTE INVENTARIO
-app.get('/reporte', async (req, res) => {
-  try {
-    const snap = await db.collection('inventario').get()
-    let urgentes=[], normales=[]
-    snap.forEach(d => {
-      const p={id:d.id,...d.data()}
-      if (p.stock_actual<=p.stock_minimo) urgentes.push(p)
-      else if (p.stock_actual<=p.stock_minimo*2) normales.push(p)
-    })
-    res.json({ urgentes, normales })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
-
-// LIMPIAR DATOS DE PRUEBA
-app.get('/limpiar-pruebas', async (req, res) => {
-  try {
-    if (req.query.pin !== PIN_ADMIN) return res.status(403).json({ error:'PIN incorrecto' })
-    for (const col of ['ventas','gastos','retiros']) {
-      const snap = await db.collection(col).get()
-      const batch = db.batch()
-      snap.forEach(d => batch.delete(d.ref))
-      await batch.commit()
+    if (d.normales.length) {
+      html += '<div class="reporte-seccion reporte-normal">📦 Comprar pronto</div>'
+      html += d.normales.map(p=>`<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad||'pza'}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
     }
-    const snap = await db.collection('inventario').get()
-    const batch = db.batch()
-    snap.forEach(d => batch.update(d.ref, { ventas_count:0 }))
-    await batch.commit()
-    res.json({ mensaje:'✅ Pruebas borradas. Inventario conservado.' })
-  } catch(e) { res.status(500).json({ error: e.message }) }
-})
+    if (!html) html = '<p style="color:#6b7280;text-align:center;padding:16px">✅ Todo el inventario está bien</p>'
+    document.getElementById('lista-reporte').innerHTML = html
+  } catch(e) { document.getElementById('lista-reporte').innerHTML = 'Error' }
+}
 
-app.listen(port, '0.0.0.0', () => console.log(`FarmaStock en el puerto ${port}`))
+function mostrarMensaje(id, texto, tipo, img) {
+  const m = document.getElementById(id)
+  m.innerHTML = img ? `<img src="${img}" alt="">${texto}` : texto
+  m.className = 'mensaje ' + tipo
+  setTimeout(() => m.className = 'mensaje', 5000)
+}
+</script>
+</body>
+</html>
