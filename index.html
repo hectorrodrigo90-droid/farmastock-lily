@@ -1,3 +1,370 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FarmaStock Lily</title>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #e8f5f0; min-height: 100vh; }
+
+    /* ── LOGIN ── */
+    #pantalla-login {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 999; padding: 30px;
+    }
+    #pantalla-login img.logo-login { width: 130px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px #0005); }
+    #pantalla-login h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    #pantalla-login p { color: #b2ffe0; font-size: 13px; margin-bottom: 24px; }
+    .pin-display {
+      background: #ffffff22; border-radius: 16px; padding: 14px 30px;
+      font-size: 36px; letter-spacing: 14px; color: white; font-weight: 800;
+      margin-bottom: 22px; min-width: 190px; text-align: center; min-height: 66px;
+    }
+    .pin-teclado { display: grid; grid-template-columns: repeat(3, 72px); gap: 10px; }
+    .pin-btn {
+      height: 64px; border: none; border-radius: 16px;
+      background: white; color: #1a7a5e; font-size: 22px; font-weight: 800;
+      cursor: pointer; transition: transform .1s; font-family: 'Nunito', sans-serif;
+    }
+    .pin-btn:active { transform: scale(.91); }
+    .pin-btn.borrar { background: #fee2e2; color: #991b1b; }
+    .pin-btn.entrar { background: #dcfce7; color: #166534; grid-column: span 3; height: 52px; font-size: 15px; }
+    #pin-error { color: #fca5a5; font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 20px; text-align:center; }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      padding: 20px 20px 16px; text-align: center;
+      border-radius: 0 0 30px 30px;
+      box-shadow: 0 4px 20px #0003; margin-bottom: 16px;
+    }
+    .header-logo { width: 140px; margin-bottom: 8px; filter: drop-shadow(0 4px 8px #0004); }
+    header h1 { font-size: 21px; font-weight: 800; color: white; }
+    .usuario-badge {
+      display: inline-block; background: #ffffff22; border-radius: 20px;
+      padding: 3px 12px; font-size: 11px; color: #b2ffe0; font-weight: 700; margin-top: 4px;
+    }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 6px; padding: 0 16px 12px; }
+    .tab {
+      flex: 1; padding: 8px 4px; border: none; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800;
+      cursor: pointer; background: white; color: #6b7280; transition: all .2s;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      box-shadow: 0 2px 8px #0001; line-height: 1.2;
+    }
+    .tab img { width: 50px; height: 50px; object-fit: contain; }
+    .tab.active { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; box-shadow: 0 4px 12px #2d9c7e44; }
+
+    /* ── PANELS ── */
+    .panel { display: none; padding: 0 16px 24px; }
+    .panel.active { display: block; }
+    .card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 12px #0001; }
+    .card h2 { font-size: 15px; font-weight: 800; color: #1a7a5e; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .card h2 img { width: 26px; height: 26px; object-fit: contain; }
+
+    /* ── ALERTAS ── */
+    .alerta-banner {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      border: 2px solid #f59e0b; border-radius: 16px;
+      padding: 12px 16px; margin-bottom: 14px;
+      font-size: 13px; color: #854d0e; font-weight: 700;
+      display: none; align-items: center; gap: 10px;
+    }
+    .alerta-banner img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
+
+    /* ── FORMS ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.full { grid-column: span 2; }
+    label { font-size: 11px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: .5px; }
+    input, select {
+      padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 14px; font-family: 'Nunito', sans-serif;
+      outline: none; width: 100%; transition: border-color .2s;
+    }
+    input:focus, select:focus { border-color: #2d9c7e; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      width: 100%; padding: 13px; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px;
+      transition: transform .15s, opacity .2s; font-family: 'Nunito', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn:active { transform: scale(.98); opacity: .9; }
+    .btn img { width: 22px; height: 22px; object-fit: contain; }
+    .btn-green  { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
+    .btn-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+    .btn-red    { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
+    .btn-orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+
+    /* ── TOP 5 ACCESO RÁPIDO ── */
+    .top5-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .top5-btn {
+      padding: 12px 8px; border: 2px solid #d1fae5; border-radius: 14px;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      cursor: pointer; text-align: center; transition: all .15s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .top5-btn:active { transform: scale(.95); border-color: #2d9c7e; }
+    .top5-btn .top5-nombre { font-size: 12px; font-weight: 800; color: #166534; line-height: 1.2; margin-bottom: 3px; }
+    .top5-btn .top5-precio { font-size: 15px; font-weight: 800; color: #2d9c7e; }
+    .top5-btn .top5-stock  { font-size: 10px; color: #6b7280; margin-top: 2px; }
+
+    /* ── MENSAJES ── */
+    .mensaje {
+      text-align: center; padding: 10px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; margin-top: 10px;
+      display: none; align-items: center; justify-content: center; gap: 8px;
+    }
+    .mensaje img { width: 28px; height: 28px; object-fit: contain; }
+    .mensaje.ok    { background: #dcfce7; color: #166534; display: flex; }
+    .mensaje.error { background: #fee2e2; color: #991b1b; display: flex; }
+    .mensaje.warn  { background: #fef9c3; color: #854d0e; display: flex; }
+
+    /* ── LISTAS ── */
+    .producto-item {
+      padding: 11px 13px; border: 2px solid #f0fdf4; border-radius: 14px;
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+      align-items: center; background: #f8fffe;
+    }
+    .producto-nombre { font-weight: 700; font-size: 14px; color: #1a1a1a; }
+    .producto-meta   { font-size: 11px; color: #6b7280; margin-top: 2px; }
+    .stock-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .stock-ok     { background: #dcfce7; color: #166534; }
+    .stock-warn   { background: #fef9c3; color: #854d0e; }
+    .stock-danger { background: #fee2e2; color: #991b1b; }
+
+    .venta-item {
+      padding: 10px 13px; border: 2px solid #e0f2fe; border-radius: 12px;
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+      align-items: center; background: #f0f9ff;
+    }
+    .gasto-item {
+      padding: 10px 13px; border: 2px solid #fee2e2; border-radius: 12px;
+      margin-bottom: 6px; display: flex; justify-content: space-between;
+      align-items: center; background: #fff5f5;
+    }
+    .retiro-item {
+      padding: 10px 13px; border: 2px solid #fde68a; border-radius: 12px;
+      margin-bottom: 6px; display: flex; justify-content: space-between;
+      align-items: center; background: #fffbeb;
+    }
+
+    /* ── STATS ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .stat-box  { border-radius: 16px; padding: 14px 10px; text-align: center; }
+    .stat-box .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; opacity: .75; }
+    .stat-box .stat-valor { font-size: 20px; font-weight: 800; }
+    .stat-ventas   { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+    .stat-ganancia { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #166534; }
+    .stat-gastos   { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+    .stat-caja     { background: linear-gradient(135deg, #fef9c3, #fde68a); color: #854d0e; }
+
+    /* ── CAJA GRANDE ── */
+    .caja-banner {
+      background: linear-gradient(135deg, #2d9c7e, #1a7a5e);
+      color: white; border-radius: 18px; padding: 18px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; font-weight: 800;
+    }
+    .caja-banner .caja-label { font-size: 13px; opacity: .85; }
+    .caja-banner .caja-monto { font-size: 28px; }
+
+    .reporte-seccion { font-weight: 800; font-size: 13px; margin: 12px 0 8px; }
+    .reporte-urgente { color: #991b1b; }
+    .reporte-normal  { color: #854d0e; }
+    .buscador {
+      padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 12px;
+      font-size: 14px; font-family: 'Nunito', sans-serif;
+      outline: none; width: 100%; margin-bottom: 12px; transition: border-color .2s;
+    }
+    .buscador:focus { border-color: #2d9c7e; }
+    .seccion-titulo { font-size: 12px; font-weight: 800; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; margin: 14px 0 8px; }
+  </style>
+</head>
+<body>
+
+<div id="pantalla-login">
+  <img src="logo_familia.png" class="logo-login" alt="Farmacia Lily">
+  <h2>FarmaStock Lily 🦜</h2>
+  <p>Ingresa tu PIN de 4 dígitos</p>
+  <div class="pin-display" id="pin-display">_ _ _ _</div>
+  <div class="pin-teclado">
+    <button class="pin-btn" onclick="pinP('1')">1</button>
+    <button class="pin-btn" onclick="pinP('2')">2</button>
+    <button class="pin-btn" onclick="pinP('3')">3</button>
+    <button class="pin-btn" onclick="pinP('4')">4</button>
+    <button class="pin-btn" onclick="pinP('5')">5</button>
+    <button class="pin-btn" onclick="pinP('6')">6</button>
+    <button class="pin-btn" onclick="pinP('7')">7</button>
+    <button class="pin-btn" onclick="pinP('8')">8</button>
+    <button class="pin-btn" onclick="pinP('9')">9</button>
+    <button class="pin-btn borrar" onclick="pinB()">⌫</button>
+    <button class="pin-btn" onclick="pinP('0')">0</button>
+    <button class="pin-btn" style="background:#e5e7eb"></button>
+    <button class="pin-btn entrar" onclick="pinEntrar()">✅ Entrar</button>
+  </div>
+  <div id="pin-error"></div>
+</div>
+
+<header>
+  <img src="logo_familia.png" class="header-logo" alt="Farmacia Lily">
+  <h1>FarmaStock Lily</h1>
+  <div class="usuario-badge" id="usuario-badge">👤 Cargando...</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="cambiarTab('inventario')">
+    <img src="rojo_inicio.png" alt="">Inicio
+  </button>
+  <button class="tab" onclick="cambiarTab('agregar')">
+    <img src="galan.png" alt="">Agregar
+  </button>
+  <button class="tab" onclick="cambiarTab('ventas')">
+    <img src="urgente.png" alt="">Ventas
+  </button>
+  <button class="tab" onclick="cambiarTab('reporte')">
+    <img src="rojo_reporte.png" alt="">Reporte
+  </button>
+</div>
+
+<div class="panel active" id="panel-inventario">
+  <div class="alerta-banner" id="alerta-banner">
+    <img src="alerta.png" alt="">
+    <span id="alerta-texto"></span>
+  </div>
+  <div class="card">
+    <h2><img src="rojo_inicio.png" alt="">Inventario actual</h2>
+    <div id="lista-inventario">Cargando...</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-agregar">
+  <div class="card">
+    <h2><img src="galan.png" alt="">Agregar producto</h2>
+    <div class="form-grid">
+      <div class="form-group full"><label>Nombre</label><input type="text" id="nombre" placeholder="Ej: Paracetamol 500mg"></div>
+      <div class="form-group"><label>Marca</label><input type="text" id="marca" placeholder="Ej: Tempra"></div>
+      <div class="form-group"><label>Caducidad</label><input type="date" id="fecha_caducidad"></div>
+      <div class="form-group"><label>Precio venta</label><input type="number" id="precio_venta" placeholder="0.00"></div>
+      <div class="form-group"><label>Costo</label><input type="number" id="costo" placeholder="0.00"></div>
+      <div class="form-group"><label>Stock actual</label><input type="number" id="stock_actual" placeholder="0"></div>
+      <div class="form-group"><label>Stock mínimo</label><input type="number" id="stock_minimo" placeholder="0"></div>
+      <div class="form-group full">
+        <label>Unidad de venta</label>
+        <select id="unidad">
+          <option value="pieza">Pieza</option>
+          <option value="caja">Caja</option>
+          <option value="frasco">Frasco</option>
+          <option value="sobre">Sobre</option>
+          <option value="ampolleta">Ampolleta</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-green" onclick="agregarProducto()">
+      <img src="ok.png" alt="">Guardar en inventario
+    </button>
+    <div class="mensaje" id="msg-agregar"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-ventas">
+  <div class="card">
+    <h2>⚡ Venta rápida — Top 5</h2>
+    <div class="top5-grid" id="top5-grid">
+      <p style="color:#6b7280;font-size:12px;grid-column:span 2;text-align:center;padding:10px">Aún no hay ventas registradas</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2><img src="urgente.png" alt="">Registrar venta</h2>
+    <label>Buscar producto</label>
+    <input type="text" class="buscador" id="buscador-ventas" placeholder="🔍 Escribe para buscar..." oninput="filtrarProductos()">
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Producto</label>
+      <select id="venta-producto"><option value="">Selecciona un producto...</option></select>
+    </div>
+    <div class="form-group">
+      <label>Cantidad</label>
+      <input type="number" id="venta-cantidad" placeholder="0" min="1">
+    </div>
+    <button class="btn btn-blue" onclick="registrarVenta()">
+      <img src="galan.png" alt="">Registrar venta
+    </button>
+    <div class="mensaje" id="msg-venta"></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-reporte">
+
+  <div class="card">
+    <h2>💵 Caja del día</h2>
+    <div id="caja-banner-wrap">Cargando...</div>
+    <div class="stat-grid" id="stats-dia-detalle" style="margin-top:10px"></div>
+
+    <div class="seccion-titulo">💸 Registrar retiro de caja</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Monto retirado</label>
+        <input type="number" id="retiro-monto" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>¿Para qué?</label>
+        <input type="text" id="retiro-concepto" placeholder="Ej: Pago a proveedor">
+      </div>
+    </div>
+    <button class="btn btn-orange" onclick="registrarRetiro()" style="margin-top:10px">
+      💵 Registrar retiro
+    </button>
+    <div class="mensaje" id="msg-retiro"></div>
+    <div id="lista-retiros" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h2>📅 Esta semana</h2>
+    <div id="stats-semana">Cargando...</div>
+  </div>
+  <div class="card">
+    <h2>🗓️ Este mes</h2>
+    <div id="stats-mes">Cargando...</div>
+  </div>
+
+  <div class="card">
+    <h2>💸 Gastos del día</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>¿Cuánto gasté?</label>
+        <input type="number" id="gasto-monto" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label>¿Para qué?</label>
+        <input type="text" id="gasto-concepto" placeholder="Ej: Surtido">
+      </div>
+    </div>
+    <button class="btn btn-red" onclick="registrarGasto()">💸 Registrar gasto</button>
+    <div class="mensaje" id="msg-gasto"></div>
+    <div id="lista-gastos" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
+    <div id="lista-reporte">Cargando...</div>
+  </div>
+
+  <div class="card">
+    <h2><img src="rojo_reporte.png" alt="">Ventas de hoy (detalle)</h2>
+    <div id="resumen-dia">Cargando...</div>
+  </div>
+
+</div>
+
 <script>
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
 
