@@ -192,6 +192,7 @@
 </head>
 <body>
 
+<!-- ════════ LOGIN ════════ -->
 <div id="pantalla-login">
   <img src="logo_familia.png" class="logo-login" alt="Farmacia Lily">
   <h2>FarmaStock Lily 🦜</h2>
@@ -215,6 +216,7 @@
   <div id="pin-error"></div>
 </div>
 
+<!-- ════════ APP ════════ -->
 <header>
   <img src="logo_familia.png" class="header-logo" alt="Farmacia Lily">
   <h1>FarmaStock Lily</h1>
@@ -236,6 +238,7 @@
   </button>
 </div>
 
+<!-- ════════ INVENTARIO ════════ -->
 <div class="panel active" id="panel-inventario">
   <div class="alerta-banner" id="alerta-banner">
     <img src="alerta.png" alt="">
@@ -247,6 +250,7 @@
   </div>
 </div>
 
+<!-- ════════ AGREGAR ════════ -->
 <div class="panel" id="panel-agregar">
   <div class="card">
     <h2><img src="galan.png" alt="">Agregar producto</h2>
@@ -276,6 +280,7 @@
   </div>
 </div>
 
+<!-- ════════ VENTAS ════════ -->
 <div class="panel" id="panel-ventas">
   <div class="card">
     <h2>⚡ Venta rápida — Top 5</h2>
@@ -302,13 +307,16 @@
   </div>
 </div>
 
+<!-- ════════ REPORTE ════════ -->
 <div class="panel" id="panel-reporte">
 
+  <!-- CAJA DEL DÍA -->
   <div class="card">
     <h2>💵 Caja del día</h2>
     <div id="caja-banner-wrap">Cargando...</div>
     <div class="stat-grid" id="stats-dia-detalle" style="margin-top:10px"></div>
 
+    <!-- RETIRO DE CAJA -->
     <div class="seccion-titulo">💸 Registrar retiro de caja</div>
     <div class="form-grid">
       <div class="form-group">
@@ -327,6 +335,7 @@
     <div id="lista-retiros" style="margin-top:12px"></div>
   </div>
 
+  <!-- ESTADÍSTICAS SEMANA / MES -->
   <div class="card">
     <h2>📅 Esta semana</h2>
     <div id="stats-semana">Cargando...</div>
@@ -336,6 +345,7 @@
     <div id="stats-mes">Cargando...</div>
   </div>
 
+  <!-- GASTOS -->
   <div class="card">
     <h2>💸 Gastos del día</h2>
     <div class="form-grid">
@@ -353,11 +363,13 @@
     <div id="lista-gastos" style="margin-top:12px"></div>
   </div>
 
+  <!-- LISTA DEL LUNES -->
   <div class="card">
     <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
     <div id="lista-reporte">Cargando...</div>
   </div>
 
+  <!-- VENTAS HOY DETALLE -->
   <div class="card">
     <h2><img src="rojo_reporte.png" alt="">Ventas de hoy (detalle)</h2>
     <div id="resumen-dia">Cargando...</div>
@@ -367,13 +379,6 @@
 
 <script>
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
-
-// ─── FUNCION PARA OBTENER LA FECHA DE MÉXICO ───
-function getInicioDia() {
-  const d = new Date();
-  d.setHours(0,0,0,0);
-  return d.toISOString();
-}
 
 // ─── LOGIN ────────────────────────────────────────────────────────────────────
 let pinActual = '', usuarioNombre = ''
@@ -460,7 +465,7 @@ async function cargarTop5() {
         <div class="top5-stock">Stock: ${p.stock_actual} ${p.unidad}</div>
       </button>
     `).join('')
-  } catch(e) { console.error(e) }
+  } catch(e) {}
 }
 
 async function ventaRapida(id, nombre, precio) {
@@ -513,24 +518,16 @@ async function registrarVenta() {
 // ─── CAJA ─────────────────────────────────────────────────────────────────────
 async function cargarVentasHoy() {
   try {
-    const inicioStr = getInicioDia();
     const [vData, gData, rData] = await Promise.all([
-      fetch('/ventas-hoy?inicio=' + inicioStr).then(r=>r.json()),
-      fetch('/gastos-hoy?inicio=' + inicioStr).then(r=>r.json()),
-      fetch('/retiros-hoy?inicio=' + inicioStr).then(r=>r.json())
+      fetch('/ventas-hoy').then(r=>r.json()),
+      fetch('/gastos-hoy').then(r=>r.json()),
+      fetch('/retiros-hoy').then(r=>r.json())
     ])
     // Caja = ventas del día - gastos - retiros
     const caja = (vData.total_dia||0) - (gData.total_gastos||0) - (rData.total_retiros||0)
-    
-    // FORMATO DE FECHA VISIBLE
-    const fechaStr = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
-    
     document.getElementById('caja-banner-wrap').innerHTML = `
       <div class="caja-banner">
-        <div>
-          <div class="caja-label">💵 En caja ahora</div>
-          <div style="font-size:10px; opacity:0.8; margin-top:2px">${fechaStr}</div>
-        </div>
+        <div><div class="caja-label">💵 En caja ahora</div></div>
         <div class="caja-monto">$${caja.toFixed(2)}</div>
       </div>
     `
@@ -566,7 +563,7 @@ async function registrarRetiro() {
 
 async function cargarRetirosHoy() {
   try {
-    const d = await fetch('/retiros-hoy?inicio=' + getInicioDia()).then(r=>r.json())
+    const d = await fetch('/retiros-hoy').then(r=>r.json())
     const div = document.getElementById('lista-retiros')
     if (!d.retiros.length) { div.innerHTML=''; return }
     div.innerHTML = `<div style="font-size:12px;font-weight:800;color:#d97706;margin-bottom:8px">Retiros hoy — Total: $${d.total_retiros.toFixed(2)}</div>`
@@ -589,7 +586,7 @@ async function registrarGasto() {
 
 async function cargarGastosHoy() {
   try {
-    const d = await fetch('/gastos-hoy?inicio=' + getInicioDia()).then(r=>r.json())
+    const d = await fetch('/gastos-hoy').then(r=>r.json())
     const div = document.getElementById('lista-gastos')
     if (!d.gastos.length) { div.innerHTML=''; return }
     div.innerHTML = `<div style="font-size:12px;font-weight:800;color:#991b1b;margin-bottom:8px">Gastos hoy — Total: $${d.total_gastos.toFixed(2)}</div>`
