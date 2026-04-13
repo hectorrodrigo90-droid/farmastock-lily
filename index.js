@@ -1,9 +1,15 @@
 const express = require('express')
 const admin = require('firebase-admin')
 
-const serviceAccount = process.env.FIREBASE_CREDENTIALS
-  ? JSON.parse(process.env.FIREBASE_CREDENTIALS)
-  : require('./serviceAccount.json')
+// Escudo de seguridad para credenciales en la nube
+let serviceAccount;
+try {
+  serviceAccount = process.env.FIREBASE_CREDENTIALS
+    ? JSON.parse(process.env.FIREBASE_CREDENTIALS)
+    : require('./serviceAccount.json')
+} catch (error) {
+  console.error("Error de Firebase: Revisa las variables en Railway. Detalle:", error.message);
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -16,8 +22,21 @@ const port = process.env.PORT || 3000
 app.use(express.json())
 app.use(express.static(__dirname))
 
+// PINs de las 4 familias (cámbialos como quieras)
+const PINES_VALIDOS = ['1234', '5678', '9012', '3456']
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
+})
+
+// Verificar PIN
+app.post('/verificar-pin', (req, res) => {
+  const { pin } = req.body
+  if (PINES_VALIDOS.includes(pin)) {
+    res.json({ ok: true })
+  } else {
+    res.json({ ok: false })
+  }
 })
 
 app.get('/inventario', async (req, res) => {
@@ -52,7 +71,6 @@ app.post('/venta', async (req, res) => {
   const nuevo_stock = stock_actual - cantidad
   await ref.update({ stock_actual: nuevo_stock, ultima_actualizacion: new Date() })
 
-  // Guardar en historial de ventas
   await db.collection('ventas').add({
     producto_id,
     nombre: doc.data().nombre,
@@ -60,7 +78,9 @@ app.post('/venta', async (req, res) => {
     unidad: doc.data().unidad || 'pieza',
     cantidad,
     precio_venta: doc.data().precio_venta,
+    costo: doc.data().costo || 0,
     total: doc.data().precio_venta * cantidad,
+    ganancia: (doc.data().precio_venta - (doc.data().costo || 0)) * cantidad,
     fecha: new Date()
   })
 
@@ -85,19 +105,86 @@ app.get('/reporte', async (req, res) => {
 app.get('/ventas-hoy', async (req, res) => {
   const hoy = new Date()
   hoy.setHours(0, 0, 0, 0)
-  const snapshot = await db.collection('ventas')
-    .where('fecha', '>=', hoy)
-    .get()
+  const snapshot = await db.collection('ventas').where('fecha', '>=', hoy).get()
   const ventas = []
   let total_dia = 0
+  let ganancia_dia = 0
   snapshot.forEach(doc => {
     const v = { id: doc.id, ...doc.data() }
     ventas.push(v)
     total_dia += v.total || 0
+    ganancia_dia += v.ganancia || 0
   })
-  res.json({ ventas, total_dia })
+  res.json({ ventas, total_dia, ganancia_dia })
 })
 
-app.listen(port, () => {
-  console.log(`FarmaStock corriendo en http://localhost:${port}`)
+// Ventas de la semana actual
+app.get('/ventas-semana', async (req, res) => {
+  const hoy = new Date()
+  const diaSemana = hoy.getDay() // 0=domingo
+  const inicioSemana = new Date(hoy)
+  inicioSemana.setDate(hoy.getDate() - diaSemana)
+  inicioSemana.setHours(0, 0, 0, 0)
+
+  const snapshot = await db.collection('ventas').where('fecha', '>=', inicioSemana).get()
+  let total_semana = 0
+  let ganancia_semana = 0
+  let total_productos = 0
+  snapshot.forEach(doc => {
+    const v = doc.data()
+    total_semana += v.total || 0
+    ganancia_semana += v.ganancia || 0
+    total_productos += v.cantidad || 0
+  })
+  res.json({ total_semana, ganancia_semana, total_productos, desde: inicioSemana })
+})
+
+// Ventas del mes actual
+app.get('/ventas-mes', async (req, res) => {
+  const hoy = new Date()
+  const inicioMes = new Date(hoy.getFullYear(), hoy.getMonth(), 1)
+
+  const snapshot = await db.collection('ventas').where('fecha', '>=', inicioMes).get()
+  let total_mes = 0
+  let ganancia_mes = 0
+  let total_productos = 0
+  snapshot.forEach(doc => {
+    const v = doc.data()
+    total_mes += v.total || 0
+    ganancia_mes += v.ganancia || 0
+    total_productos += v.cantidad || 0
+  })
+  res.json({ total_mes, ganancia_mes, total_productos, desde: inicioMes })
+})
+
+// Registrar gasto
+app.post('/gasto', async (req, res) => {
+  const { monto, concepto } = req.body
+  if (!monto || !concepto) return res.status(400).json({ error: 'Faltan datos' })
+  await db.collection('gastos').add({
+    monto: parseFloat(monto),
+    concepto,
+    fecha: new Date()
+  })
+  res.json({ mensaje: 'Gasto registrado' })
+})
+
+// Gastos de hoy
+app.get('/gastos-hoy', async (req, res) => {
+  const hoy = new Date()
+  hoy.setHours(0, 0, 0, 0)
+  const snapshot = await db.collection('gastos').where('fecha', '>=', hoy).get()
+  const gastos = []
+  let total_gastos = 0
+  snapshot.forEach(doc => {
+    const g = { id: doc.id, ...doc.data() }
+    gastos.push(g)
+    total_gastos += g.monto || 0
+  })
+  res.json({ gastos, total_gastos })
+})
+
+// ¡AQUÍ ESTÁ LA MAGIA PARA QUE LA NUBE TE ESCUCHE! (0.0.0.0)
+app.listen(port, '0.0.0.0', () => {
+  console.log(`FarmaStock conectado y escuchando en el puerto ${port}`)
 })
