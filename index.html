@@ -19,7 +19,7 @@
     }
     #pantalla-login img.logo-login { width: 130px; margin-bottom: 14px; filter: drop-shadow(0 4px 12px #0005); }
     #pantalla-login h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
-    #pantalla-login p { color: #b2ffe0; font-size: 13px; margin-bottom: 24px; }
+    #pantalla-login p  { color: #b2ffe0; font-size: 13px; margin-bottom: 24px; }
     .pin-display {
       background: #ffffff22; border-radius: 16px; padding: 14px 30px;
       font-size: 36px; letter-spacing: 14px; color: white; font-weight: 800;
@@ -34,7 +34,7 @@
     .pin-btn:active { transform: scale(.91); }
     .pin-btn.borrar { background: #fee2e2; color: #991b1b; }
     .pin-btn.entrar { background: #dcfce7; color: #166534; grid-column: span 3; height: 52px; font-size: 15px; }
-    #pin-error { color: #fca5a5; font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 20px; text-align:center; }
+    #pin-error { color: #fca5a5; font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 20px; text-align: center; }
 
     /* ── HEADER ── */
     header {
@@ -95,15 +95,14 @@
     .btn {
       width: 100%; padding: 13px; border: none; border-radius: 14px;
       font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 12px;
-      transition: transform .15s, opacity .2s; font-family: 'Nunito', sans-serif;
+      transition: transform .15s; font-family: 'Nunito', sans-serif;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .btn:active { transform: scale(.98); opacity: .9; }
+    .btn:active { transform: scale(.97); }
     .btn img { width: 22px; height: 22px; object-fit: contain; }
     .btn-green  { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
     .btn-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
     .btn-red    { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
-    .btn-orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
 
     /* ── TOP 5 ── */
     .top5-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
@@ -113,7 +112,7 @@
       cursor: pointer; text-align: center; transition: all .15s;
       font-family: 'Nunito', sans-serif;
     }
-    .top5-btn:active { transform: scale(.95); border-color: #2d9c7e; background: #dcfce7; }
+    .top5-btn:active { transform: scale(.95); border-color: #2d9c7e; }
     .top5-nombre { font-size: 12px; font-weight: 800; color: #166534; line-height: 1.2; margin-bottom: 3px; }
     .top5-precio { font-size: 15px; font-weight: 800; color: #2d9c7e; }
     .top5-stock  { font-size: 10px; color: #6b7280; margin-top: 2px; }
@@ -171,6 +170,44 @@
     }
     .caja-label { font-size: 13px; opacity: .85; margin-bottom: 2px; }
     .caja-monto { font-size: 30px; }
+
+    /* ── CALCULADORA BÁSICA ── */
+    .calc-display {
+      background: #1a1a2e; border-radius: 16px; padding: 14px 16px;
+      text-align: right; margin-bottom: 12px;
+    }
+    .calc-expr   { font-size: 12px; color: #6b9080; min-height: 18px; font-family: monospace; margin-bottom: 4px; }
+    .calc-result { font-size: 30px; font-weight: 800; color: white; font-family: monospace; word-break: break-all; }
+    .calc-grid   { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+    .calc-btn {
+      padding: 15px 4px; border: none; border-radius: 12px;
+      font-size: 17px; font-weight: 800; cursor: pointer;
+      transition: transform .1s; font-family: 'Nunito', sans-serif;
+    }
+    .calc-btn:active { transform: scale(.92); }
+    .cb-num  { background: #f0fdf4; color: #1a1a1a; }
+    .cb-op   { background: linear-gradient(135deg, #2d9c7e, #1a7a5e); color: white; }
+    .cb-eq   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+    .cb-clr  { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
+    .cb-zero { grid-column: span 2; }
+
+    /* ── CALCULADORA TARJETA ── */
+    .tarjeta-tipo-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .tipo-btn {
+      padding: 14px; border: 3px solid #e5e7eb; border-radius: 14px;
+      background: white; font-family: 'Nunito', sans-serif; font-size: 14px;
+      font-weight: 800; cursor: pointer; transition: all .15s; color: #374151;
+    }
+    .tipo-btn.sel-credito { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+    .tipo-btn.sel-debito  { border-color: #3b82f6; background: #dbeafe; color: #1e40af; }
+    .tarjeta-resultado {
+      border-radius: 16px; padding: 18px; margin-top: 14px;
+      display: none; text-align: center;
+    }
+    .tarjeta-resultado.credito { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; }
+    .tarjeta-resultado.debito  { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+    .tarjeta-monto   { font-size: 34px; font-weight: 800; margin: 8px 0; }
+    .tarjeta-detalle { font-size: 12px; opacity: .8; line-height: 1.6; }
 
     .reporte-seccion { font-weight: 800; font-size: 13px; margin: 12px 0 8px; }
     .reporte-urgente { color: #991b1b; }
@@ -279,12 +316,16 @@
 
 <!-- ════════ VENTAS ════════ -->
 <div class="panel" id="panel-ventas">
+
+  <!-- TOP 5 -->
   <div class="card">
     <h2>⚡ Venta rápida — Top 5</h2>
     <div class="top5-grid" id="top5-grid">
       <p style="color:#6b7280;font-size:12px;grid-column:span 2;text-align:center;padding:10px">Cargando...</p>
     </div>
   </div>
+
+  <!-- REGISTRAR VENTA -->
   <div class="card">
     <h2><img src="urgente.png" alt="">Registrar venta</h2>
     <label>Buscar producto</label>
@@ -302,18 +343,72 @@
     </button>
     <div class="mensaje" id="msg-venta"></div>
   </div>
+
+  <!-- CALCULADORA BÁSICA -->
+  <div class="card">
+    <h2>🧮 Calculadora</h2>
+    <div class="calc-display">
+      <div class="calc-expr" id="calc-expr"></div>
+      <div class="calc-result" id="calc-result">0</div>
+    </div>
+    <div class="calc-grid">
+      <button class="calc-btn cb-clr"  onclick="calcAC()">AC</button>
+      <button class="calc-btn cb-op"   onclick="calcToggleSign()">+/−</button>
+      <button class="calc-btn cb-op"   onclick="calcPct()">%</button>
+      <button class="calc-btn cb-op"   onclick="calcOp('/')">÷</button>
+
+      <button class="calc-btn cb-num"  onclick="calcNum('7')">7</button>
+      <button class="calc-btn cb-num"  onclick="calcNum('8')">8</button>
+      <button class="calc-btn cb-num"  onclick="calcNum('9')">9</button>
+      <button class="calc-btn cb-op"   onclick="calcOp('*')">×</button>
+
+      <button class="calc-btn cb-num"  onclick="calcNum('4')">4</button>
+      <button class="calc-btn cb-num"  onclick="calcNum('5')">5</button>
+      <button class="calc-btn cb-num"  onclick="calcNum('6')">6</button>
+      <button class="calc-btn cb-op"   onclick="calcOp('-')">−</button>
+
+      <button class="calc-btn cb-num"  onclick="calcNum('1')">1</button>
+      <button class="calc-btn cb-num"  onclick="calcNum('2')">2</button>
+      <button class="calc-btn cb-num"  onclick="calcNum('3')">3</button>
+      <button class="calc-btn cb-op"   onclick="calcOp('+')">+</button>
+
+      <button class="calc-btn cb-num cb-zero" onclick="calcNum('0')">0</button>
+      <button class="calc-btn cb-num"  onclick="calcDot()">.</button>
+      <button class="calc-btn cb-eq"   onclick="calcEquals()">=</button>
+    </div>
+  </div>
+
+  <!-- CALCULADORA TARJETA -->
+  <div class="card">
+    <h2>💳 ¿Cuánto cobrar con tarjeta?</h2>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:14px">Evita perder dinero en comisiones bancarias 🦜</p>
+    <div class="form-group">
+      <label>Precio del producto ($)</label>
+      <input type="number" id="tarjeta-precio" placeholder="0.00" oninput="calcTarjeta()">
+    </div>
+    <div class="tarjeta-tipo-btns">
+      <button class="tipo-btn" id="btn-credito" onclick="selTarjeta('credito')">
+        💳 Crédito<br><span style="font-size:11px;font-weight:600;opacity:.7">comisión 4.49%</span>
+      </button>
+      <button class="tipo-btn" id="btn-debito" onclick="selTarjeta('debito')">
+        💳 Débito<br><span style="font-size:11px;font-weight:600;opacity:.7">comisión 3.49%</span>
+      </button>
+    </div>
+    <div class="tarjeta-resultado" id="tarjeta-resultado">
+      <div id="tarjeta-tipo-label" style="font-size:13px;font-weight:800;margin-bottom:4px"></div>
+      <div class="tarjeta-monto" id="tarjeta-monto">$0.00</div>
+      <div class="tarjeta-detalle" id="tarjeta-detalle"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ════════ REPORTE ════════ -->
 <div class="panel" id="panel-reporte">
-
-  <!-- CAJA DEL DÍA -->
   <div class="card">
     <h2>💵 Caja del día</h2>
     <div id="caja-banner-wrap">Cargando...</div>
     <div class="stat-grid" id="stats-dia-detalle"></div>
-
-    <!-- GASTOS -->
     <div class="seccion-titulo">💸 Registrar gasto del día</div>
     <div class="form-grid">
       <div class="form-group">
@@ -329,8 +424,6 @@
     <div class="mensaje" id="msg-gasto"></div>
     <div id="lista-gastos" style="margin-top:12px"></div>
   </div>
-
-  <!-- SEMANA / MES -->
   <div class="card">
     <h2>📅 Esta semana</h2>
     <div id="stats-semana">Cargando...</div>
@@ -339,27 +432,21 @@
     <h2>🗓️ Este mes</h2>
     <div id="stats-mes">Cargando...</div>
   </div>
-
-  <!-- LISTA DEL LUNES -->
   <div class="card">
     <h2><img src="rojo_reporte.png" alt="">Lista del lunes</h2>
     <div id="lista-reporte">Cargando...</div>
   </div>
-
-  <!-- VENTAS HOY DETALLE -->
   <div class="card">
     <h2><img src="rojo_reporte.png" alt="">Ventas de hoy (detalle)</h2>
     <div id="resumen-dia">Cargando...</div>
   </div>
-
 </div>
 
 <script>
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')
 
 // ─── LOGIN ────────────────────────────────────────────────────────────────────
-let pinActual = ''
-let usuarioNombre = ''
+let pinActual = '', usuarioNombre = ''
 
 function pinP(n) { if (pinActual.length < 4) { pinActual += n; dibujarPin() } }
 function pinB()  { pinActual = pinActual.slice(0, -1); dibujarPin() }
@@ -368,13 +455,11 @@ function dibujarPin() {
   for (let i = 0; i < 4; i++) { t += pinActual[i] ? '●' : '_'; if (i < 3) t += ' ' }
   document.getElementById('pin-display').textContent = t
 }
-
 async function pinEntrar() {
   if (pinActual.length !== 4) { document.getElementById('pin-error').textContent = 'Ingresa 4 dígitos'; return }
   try {
     const res = await fetch('/verificar-pin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ pin: pinActual })
     })
     const d = await res.json()
@@ -386,14 +471,11 @@ async function pinEntrar() {
       document.getElementById('pin-error').textContent = '❌ PIN incorrecto'
       pinActual = ''; dibujarPin()
     }
-  } catch(e) {
-    document.getElementById('pin-error').textContent = 'Error de conexión'
-  }
+  } catch(e) { document.getElementById('pin-error').textContent = 'Error de conexión' }
 }
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
-let productos = []
-let productosFiltrados = []
+let productos = [], productosFiltrados = []
 cargarInventario()
 
 function cambiarTab(tab) {
@@ -407,7 +489,6 @@ function cambiarTab(tab) {
 }
 
 async function cargarTodoReporte() {
-  // Las llamadas van una por una para no mezclar errores
   await cargarCajaHoy()
   cargarGastosHoy()
   cargarEstadisticas()
@@ -423,16 +504,13 @@ async function cargarInventario() {
     const lista = document.getElementById('lista-inventario')
     const banner = document.getElementById('alerta-banner')
     const bajos = productos.filter(p => p.stock_actual <= p.stock_minimo)
-    if (bajos.length > 0) {
+    if (bajos.length) {
       banner.style.display = 'flex'
       document.getElementById('alerta-texto').textContent =
         bajos.length + ' producto(s) con stock bajo: ' + bajos.map(p => p.nombre).join(', ')
-    } else {
-      banner.style.display = 'none'
-    }
+    } else { banner.style.display = 'none' }
     if (!productos.length) {
-      lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'
-      return
+      lista.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px">No hay productos aún</p>'; return
     }
     lista.innerHTML = productos.map(p => {
       const c = p.stock_actual <= p.stock_minimo ? 'stock-danger'
@@ -445,18 +523,14 @@ async function cargarInventario() {
         <span class="stock-badge ${c}">${p.stock_actual} uds</span>
       </div>`
     }).join('')
-  } catch(e) {
-    document.getElementById('lista-inventario').innerHTML = 'Error cargando'
-  }
+  } catch(e) { document.getElementById('lista-inventario').innerHTML = 'Error cargando' }
 }
 
 function llenarSelectProductos() {
   const sel = document.getElementById('venta-producto')
   const lista = productosFiltrados.length ? productosFiltrados : productos
   sel.innerHTML = '<option value="">Selecciona un producto...</option>'
-  lista.forEach(p => {
-    sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} ${p.unidad || 'pza'}</option>`
-  })
+  lista.forEach(p => { sel.innerHTML += `<option value="${p.id}">${p.nombre} — ${p.stock_actual} ${p.unidad || 'pza'}</option>` })
 }
 
 function filtrarProductos() {
@@ -490,18 +564,13 @@ async function ventaRapida(id, nombre, precio) {
   if (!confirm(`¿Vender 1 "${nombre}" — $${Number(precio).toFixed(2)}?`)) return
   try {
     const res = await fetch('/venta', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ producto_id: id, cantidad: 1, usuario: usuarioNombre })
     })
     const d = await res.json()
     mostrarMensaje('msg-venta', d.alerta || `✅ ${nombre} vendido`, d.alerta ? 'warn' : 'ok')
-    cargarInventario()
-    cargarTop5()
-    llenarSelectProductos()
-  } catch(e) {
-    mostrarMensaje('msg-venta', 'Error al registrar', 'error')
-  }
+    cargarInventario(); cargarTop5(); llenarSelectProductos()
+  } catch(e) { mostrarMensaje('msg-venta', 'Error al registrar', 'error') }
 }
 
 // ─── AGREGAR PRODUCTO ─────────────────────────────────────────────────────────
@@ -519,48 +588,32 @@ async function agregarProducto() {
   }
   if (!p.nombre || !p.marca) { mostrarMensaje('msg-agregar', 'Llena nombre y marca', 'error'); return }
   try {
-    await fetch('/producto', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(p)
-    })
+    await fetch('/producto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })
     mostrarMensaje('msg-agregar', '¡Producto guardado!', 'ok', 'ok.png')
-    ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad']
-      .forEach(id => document.getElementById(id).value = '')
+    ;['nombre','marca','precio_venta','costo','stock_actual','stock_minimo','fecha_caducidad'].forEach(id => document.getElementById(id).value = '')
     document.getElementById('unidad').value = 'pieza'
     cargarInventario()
-  } catch(e) {
-    mostrarMensaje('msg-agregar', 'Error al guardar', 'error')
-  }
+  } catch(e) { mostrarMensaje('msg-agregar', 'Error al guardar', 'error') }
 }
 
 // ─── REGISTRAR VENTA ──────────────────────────────────────────────────────────
 async function registrarVenta() {
   const producto_id = document.getElementById('venta-producto').value
   const cantidad = parseInt(document.getElementById('venta-cantidad').value)
-  if (!producto_id || !cantidad || cantidad < 1) {
-    mostrarMensaje('msg-venta', 'Selecciona producto y cantidad', 'error'); return
-  }
+  if (!producto_id || !cantidad || cantidad < 1) { mostrarMensaje('msg-venta', 'Selecciona producto y cantidad', 'error'); return }
   try {
     const res = await fetch('/venta', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ producto_id, cantidad, usuario: usuarioNombre })
     })
     const d = await res.json()
-    mostrarMensaje('msg-venta',
-      d.alerta || '¡Venta registrada! Stock: ' + d.stock_nuevo,
-      d.alerta ? 'warn' : 'ok',
-      d.alerta ? 'alerta.png' : 'galan.png')
+    mostrarMensaje('msg-venta', d.alerta || '¡Venta registrada! Stock: ' + d.stock_nuevo,
+      d.alerta ? 'warn' : 'ok', d.alerta ? 'alerta.png' : 'galan.png')
     document.getElementById('venta-cantidad').value = ''
     document.getElementById('buscador-ventas').value = ''
     productosFiltrados = [...productos]
-    cargarInventario()
-    cargarTop5()
-    llenarSelectProductos()
-  } catch(e) {
-    mostrarMensaje('msg-venta', 'Error al registrar', 'error')
-  }
+    cargarInventario(); cargarTop5(); llenarSelectProductos()
+  } catch(e) { mostrarMensaje('msg-venta', 'Error al registrar', 'error') }
 }
 
 // ─── CAJA DEL DÍA ─────────────────────────────────────────────────────────────
@@ -569,22 +622,20 @@ async function cargarCajaHoy() {
   const statsDiv = document.getElementById('stats-dia-detalle')
   const resumenDiv = document.getElementById('resumen-dia')
   try {
-    // Traer ventas y gastos en paralelo (retiros ya no existe como ruta separada)
     const [vData, gData] = await Promise.all([
       fetch('/ventas-hoy').then(r => r.json()),
       fetch('/gastos-hoy').then(r => r.json())
     ])
-
-    const totalVentas  = vData.total_dia    || 0
-    const ganancia     = vData.ganancia_dia || 0
-    const totalGastos  = gData.total_gastos || 0
-    const enCaja       = totalVentas - totalGastos
+    const totalVentas = vData.total_dia    || 0
+    const ganancia    = vData.ganancia_dia || 0
+    const totalGastos = gData.total_gastos || 0
+    const enCaja      = totalVentas - totalGastos
 
     wrap.innerHTML = `
       <div class="caja-banner">
         <div>
           <div class="caja-label">💵 En caja ahora</div>
-          <div style="font-size:11px;opacity:.7">Ventas − Gastos</div>
+          <div style="font-size:11px;opacity:.7">Ventas − Gastos del día</div>
         </div>
         <div class="caja-monto">$${enCaja.toFixed(2)}</div>
       </div>`
@@ -607,7 +658,6 @@ async function cargarCajaHoy() {
         <div class="stat-valor">$${enCaja.toFixed(2)}</div>
       </div>`
 
-    // Detalle de ventas del día
     if (!vData.ventas || !vData.ventas.length) {
       resumenDiv.innerHTML = '<p style="color:#6b7280;text-align:center;padding:16px">No hay ventas hoy</p>'
     } else {
@@ -633,18 +683,15 @@ async function registrarGasto() {
   if (!monto || !concepto) { mostrarMensaje('msg-gasto', 'Llena monto y concepto', 'error'); return }
   try {
     await fetch('/gasto', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ monto, concepto, usuario: usuarioNombre })
     })
     mostrarMensaje('msg-gasto', '¡Gasto registrado!', 'ok')
     document.getElementById('gasto-monto').value = ''
     document.getElementById('gasto-concepto').value = ''
     await cargarGastosHoy()
-    await cargarCajaHoy()  // Actualiza caja al agregar gasto
-  } catch(e) {
-    mostrarMensaje('msg-gasto', 'Error', 'error')
-  }
+    await cargarCajaHoy()
+  } catch(e) { mostrarMensaje('msg-gasto', 'Error', 'error') }
 }
 
 async function cargarGastosHoy() {
@@ -665,7 +712,7 @@ async function cargarGastosHoy() {
   } catch(e) { div.innerHTML = '' }
 }
 
-// ─── ESTADÍSTICAS SEMANA / MES ────────────────────────────────────────────────
+// ─── ESTADÍSTICAS ─────────────────────────────────────────────────────────────
 async function cargarEstadisticas() {
   try {
     const [sem, mes] = await Promise.all([
@@ -674,27 +721,14 @@ async function cargarEstadisticas() {
     ])
     document.getElementById('stats-semana').innerHTML = `
       <div class="stat-grid">
-        <div class="stat-box stat-ventas">
-          <div class="stat-label">Vendido</div>
-          <div class="stat-valor">$${Number(sem.total_semana || 0).toFixed(2)}</div>
-        </div>
-        <div class="stat-box stat-ganancia">
-          <div class="stat-label">Ganancia</div>
-          <div class="stat-valor">$${Number(sem.ganancia_semana || 0).toFixed(2)}</div>
-        </div>
+        <div class="stat-box stat-ventas"><div class="stat-label">Vendido</div><div class="stat-valor">$${Number(sem.total_semana || 0).toFixed(2)}</div></div>
+        <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia</div><div class="stat-valor">$${Number(sem.ganancia_semana || 0).toFixed(2)}</div></div>
       </div>
       <p style="font-size:12px;color:#6b7280;text-align:center">${sem.total_productos || 0} piezas vendidas esta semana</p>`
-
     document.getElementById('stats-mes').innerHTML = `
       <div class="stat-grid">
-        <div class="stat-box stat-ventas">
-          <div class="stat-label">Vendido</div>
-          <div class="stat-valor">$${Number(mes.total_mes || 0).toFixed(2)}</div>
-        </div>
-        <div class="stat-box stat-ganancia">
-          <div class="stat-label">Ganancia</div>
-          <div class="stat-valor">$${Number(mes.ganancia_mes || 0).toFixed(2)}</div>
-        </div>
+        <div class="stat-box stat-ventas"><div class="stat-label">Vendido</div><div class="stat-valor">$${Number(mes.total_mes || 0).toFixed(2)}</div></div>
+        <div class="stat-box stat-ganancia"><div class="stat-label">Ganancia</div><div class="stat-valor">$${Number(mes.ganancia_mes || 0).toFixed(2)}</div></div>
       </div>
       <p style="font-size:12px;color:#6b7280;text-align:center">${mes.total_productos || 0} piezas vendidas este mes</p>`
   } catch(e) {
@@ -703,7 +737,7 @@ async function cargarEstadisticas() {
   }
 }
 
-// ─── REPORTE INVENTARIO ───────────────────────────────────────────────────────
+// ─── REPORTE ──────────────────────────────────────────────────────────────────
 async function cargarReporte() {
   const div = document.getElementById('lista-reporte')
   try {
@@ -711,31 +745,91 @@ async function cargarReporte() {
     let html = ''
     if (d.urgentes && d.urgentes.length) {
       html += '<div class="reporte-seccion reporte-urgente">🚨 Comprar HOY</div>'
-      html += d.urgentes.map(p => `
-        <div class="producto-item">
-          <div>
-            <div class="producto-nombre">${p.nombre}</div>
-            <div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div>
-          </div>
-          <span class="stock-badge stock-danger">URGENTE</span>
-        </div>`).join('')
+      html += d.urgentes.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div></div><span class="stock-badge stock-danger">URGENTE</span></div>`).join('')
     }
     if (d.normales && d.normales.length) {
       html += '<div class="reporte-seccion reporte-normal">📦 Comprar pronto</div>'
-      html += d.normales.map(p => `
-        <div class="producto-item">
-          <div>
-            <div class="producto-nombre">${p.nombre}</div>
-            <div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div>
-          </div>
-          <span class="stock-badge stock-warn">REVISAR</span>
-        </div>`).join('')
+      html += d.normales.map(p => `<div class="producto-item"><div><div class="producto-nombre">${p.nombre}</div><div class="producto-meta">${p.marca} · Stock: ${p.stock_actual} ${p.unidad || 'pza'}</div></div><span class="stock-badge stock-warn">REVISAR</span></div>`).join('')
     }
     if (!html) html = '<p style="color:#6b7280;text-align:center;padding:16px">✅ Todo el inventario está bien</p>'
     div.innerHTML = html
-  } catch(e) {
-    div.innerHTML = 'Error cargando reporte'
-  }
+  } catch(e) { div.innerHTML = 'Error cargando reporte' }
+}
+
+// ─── CALCULADORA BÁSICA ───────────────────────────────────────────────────────
+let cDisp = '0', cExpr = '', cOper = null, cPrev = null, cNuevo = true
+
+function calcNum(n) {
+  if (cNuevo) { cDisp = n; cNuevo = false }
+  else cDisp = cDisp === '0' ? n : cDisp + n
+  refCalc()
+}
+function calcDot() {
+  if (cNuevo) { cDisp = '0.'; cNuevo = false }
+  else if (!cDisp.includes('.')) cDisp += '.'
+  refCalc()
+}
+function calcOp(op) {
+  const v = parseFloat(cDisp)
+  if (cPrev !== null && !cNuevo) cDisp = String(_op(cPrev, v, cOper))
+  cPrev = parseFloat(cDisp); cOper = op; cNuevo = true
+  cExpr = cDisp + ' ' + (op==='*'?'×':op==='/'?'÷':op)
+  refCalc()
+}
+function calcEquals() {
+  if (cPrev === null || cOper === null) return
+  const v = parseFloat(cDisp)
+  cExpr = cExpr + ' ' + cDisp + ' ='
+  cDisp = String(_op(cPrev, v, cOper))
+  cPrev = null; cOper = null; cNuevo = true
+  refCalc()
+}
+function calcAC() { cDisp='0'; cExpr=''; cPrev=null; cOper=null; cNuevo=true; refCalc() }
+function calcToggleSign() { cDisp = String(parseFloat(cDisp) * -1); refCalc() }
+function calcPct() {
+  // Si hay operación pendiente: calcula porcentaje del valor previo
+  if (cPrev !== null) cDisp = String(cPrev * (parseFloat(cDisp) / 100))
+  else cDisp = String(parseFloat(cDisp) / 100)
+  cNuevo = true; refCalc()
+}
+function _op(a, b, op) {
+  let r = op==='+'?a+b : op==='-'?a-b : op==='*'?a*b : b!==0?a/b:0
+  return parseFloat(r.toFixed(10))
+}
+function refCalc() {
+  document.getElementById('calc-expr').textContent   = cExpr
+  document.getElementById('calc-result').textContent = cDisp
+}
+
+// ─── CALCULADORA TARJETA ──────────────────────────────────────────────────────
+let tipoTarjeta = null
+
+function selTarjeta(tipo) {
+  tipoTarjeta = tipo
+  document.getElementById('btn-credito').className = 'tipo-btn' + (tipo === 'credito' ? ' sel-credito' : '')
+  document.getElementById('btn-debito').className  = 'tipo-btn' + (tipo === 'debito'  ? ' sel-debito'  : '')
+  calcTarjeta()
+}
+
+function calcTarjeta() {
+  const base = parseFloat(document.getElementById('tarjeta-precio').value)
+  const res  = document.getElementById('tarjeta-resultado')
+  if (!base || base <= 0 || !tipoTarjeta) { res.style.display = 'none'; return }
+  // Tu fórmula exacta de Python
+  const divisor = tipoTarjeta === 'credito' ? 0.9551 : 0.9651
+  const pct     = tipoTarjeta === 'credito' ? '4.49' : '3.49'
+  const final   = base / divisor
+  const comision = final - base
+
+  res.style.display = 'block'
+  res.className = 'tarjeta-resultado ' + tipoTarjeta
+  document.getElementById('tarjeta-tipo-label').textContent =
+    tipoTarjeta === 'credito' ? '💳 Con crédito cobra:' : '💳 Con débito cobra:'
+  document.getElementById('tarjeta-monto').textContent = '$' + final.toFixed(2)
+  document.getElementById('tarjeta-detalle').innerHTML =
+    `Precio base: $${base.toFixed(2)}<br>
+     Comisión banco ${pct}%: $${comision.toFixed(2)}<br>
+     Lo que te queda a ti: <strong>$${base.toFixed(2)}</strong> ✅`
 }
 
 // ─── UTILIDAD ─────────────────────────────────────────────────────────────────
